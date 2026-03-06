@@ -5,7 +5,4 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   base: '/tickets/',
   plugins: [react()],
-  optimizeDeps: {
-    exclude: ['lucide-react'],
-  },
 });
