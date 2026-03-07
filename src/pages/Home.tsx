@@ -38,7 +38,10 @@ const faqs = [
   }
 ];
 
-// IDs válidos simulando una base de datos
+// --- CONFIGURACIÓN DE DATOS ---
+
+// IDs válidos simulando una base de datos real. 
+// Cada ID está vinculado a una categoría de ticket (oro, plata, bronce).
 const validDatabaseIds: Record<string, TicketTier> = {
   'MG001A': 'oro',
   'MG999Z': 'oro',
@@ -87,6 +90,12 @@ export default function Home() {
   const [isCardFlipped, setIsCardFlipped] = useState(false);
   const [idError, setIdError] = useState<string | null>(null);
 
+  // Estados para el formulario de registro (Dorso)
+  const [regName, setRegName] = useState('');
+  const [regEmail, setRegEmail] = useState('');
+  const [regPhone, setRegPhone] = useState('');
+  const [regAge, setRegAge] = useState('');
+
   // Parallax configuration for the rewards section
   const rewardsRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
@@ -97,29 +106,34 @@ export default function Home() {
   const yGrid = useTransform(scrollYProgress, [0, 1], ["-20%", "20%"]);
   const yContentBase = useTransform(scrollYProgress, [0, 1], ["0%", "5%"]);
 
+  /**
+   * Maneja el cambio en el input del ID del Ticket.
+   * - Fuerza mayúsculas.
+   * - Limita a 6 caracteres alfanuméricos.
+   * - Resetea estados de error y de giro al modificar.
+   */
   const handleTicketIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Solo permite letras y números, máximo 6 caracteres
     const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
     setTicketId(value);
     
-    // Al tipear, reseteamos errores y estado de flip si existía
     if (idError) setIdError(null);
     if (isCardFlipped) setIsCardFlipped(false);
   };
 
-  // Efecto para validar automáticamente cuando se llega a 6 caracteres
+  /**
+   * Efecto de Validación:
+   * Cuando el ID llega a 6 caracteres, gira la tarjeta automáticamente.
+   * Para esta etapa, permitimos que CUALQUIER ID de 6 caracteres proceda al registro.
+   */
   useEffect(() => {
     if (ticketId.length === 6) {
-      // Simular verificación contra base de datos
-      const matchedTier = validDatabaseIds[ticketId];
-      if (matchedTier) {
-         setSelectedTier(matchedTier);
-         setIsCardFlipped(true);
-         setIdError(null);
-      } else {
-         setIsCardFlipped(false);
-         setIdError('El ID ingresado no es válido o no existe.');
-      }
+      // Intentamos machear con la base de datos para el estilo,
+      // pero si no existe, permitimos continuar con estilo 'oro' por defecto.
+      const matchedTier = validDatabaseIds[ticketId] || 'oro';
+      
+      setSelectedTier(matchedTier);
+      setIsCardFlipped(true);
+      setIdError(null);
     }
   }, [ticketId]);
 
@@ -339,13 +353,17 @@ export default function Home() {
                   background: { duration: 0.8, ease: 'easeOut' },
                   borderColor: { duration: 0.8, ease: 'easeOut' }
                 }}
-                className={`relative w-full max-w-sm mx-auto aspect-[1.586/1] rounded-2xl overflow-hidden border-2`}
+                className={`relative w-full max-w-sm mx-auto aspect-[1.586/1] rounded-2xl border-2`}
                 style={{ transformStyle: 'preserve-3d' }}
               >
                 {/* Cara frontal */}
                 <div
-                  className="absolute inset-0 flex flex-col p-6"
-                  style={{ backfaceVisibility: 'hidden', transform: 'rotateY(0deg)' }}
+                  className="absolute inset-0 flex flex-col p-6 rounded-[14px] overflow-hidden"
+                  style={{ 
+                    backfaceVisibility: 'hidden', 
+                    transform: 'rotateY(0deg)',
+                    zIndex: isCardFlipped ? 0 : 1 
+                  }}
                 >
                   {/* Overlay Confirmación removido en esta etapa */}
 
@@ -382,15 +400,80 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-                {/* Cara trasera */}
+                {/* 
+                  CARA TRASERA (REGISTRO)
+                  Esta sección aparece automáticamente mediante un giro (rotateY(180deg))
+                  cuando el ID ingresado en el frente es validado correctamente.
+                */}
                 <div
-                  className="absolute inset-0 flex flex-col items-center justify-center p-6"
-                  style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+                  className="absolute inset-0 flex flex-col p-5 bg-black/40 backdrop-blur-sm rounded-[14px] overflow-hidden"
+                  style={{ 
+                    backfaceVisibility: 'hidden', 
+                    transform: 'rotateY(180deg)',
+                    zIndex: isCardFlipped ? 1 : 0
+                  }}
                 >
-                  <p className="text-migusto-crema/60 text-xs uppercase tracking-widest mb-2">Reverso</p>
-                  <p className="text-migusto-crema/80 text-sm text-center px-4">
-                    Términos y condiciones · Válido solo en Vicente López
-                  </p>
+                  <div className="flex justify-between items-center mb-3">
+                    <h4 className="text-white text-sm font-black uppercase tracking-widest">Registro Lovers</h4>
+                    <img
+                      src={`${import.meta.env.BASE_URL}Logo Mi Gusto 2025.png`}
+                      alt="Mi Gusto"
+                      className="h-6 w-auto object-contain brightness-200 contrast-125"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-3 flex-1 justify-center">
+                    <div className="flex flex-col">
+                      <input
+                        type="text"
+                        placeholder="NOMBRE Y APELLIDO"
+                        value={regName}
+                        onChange={(e) => setRegName(e.target.value.toUpperCase())}
+                        className="w-full bg-white/5 border-b border-white/20 px-2 py-1 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-white/50 transition-all uppercase font-bold"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <input
+                        type="email"
+                        placeholder="CORREO ELECTRÓNICO"
+                        value={regEmail}
+                        onChange={(e) => setRegEmail(e.target.value)}
+                        className="w-full bg-white/5 border-b border-white/20 px-2 py-1 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-white/50 transition-all font-mono"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <input
+                        type="tel"
+                        placeholder="NÚMERO DE CELULAR"
+                        value={regPhone}
+                        onChange={(e) => setRegPhone(e.target.value)}
+                        className="w-full bg-white/5 border-b border-white/20 px-2 py-1 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-white/50 transition-all"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <input
+                        type="text"
+                        placeholder="EDAD"
+                        value={regAge}
+                        onChange={(e) => setRegAge(e.target.value.replace(/\D/g, '').slice(0, 2))}
+                        className="w-full bg-white/5 border-b border-white/20 px-2 py-1 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-white/50 transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mt-4 flex justify-center">
+                    <button
+                      type="button"
+                      disabled={!regName || !regEmail || !regPhone || !regAge}
+                      className={`w-full py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${
+                        (!regName || !regEmail || !regPhone || !regAge)
+                          ? 'bg-white/5 text-white/20 cursor-not-allowed'
+                          : `bg-white text-black hover:bg-white/90 shadow-lg active:scale-95`
+                      }`}
+                    >
+                      CONFIRMAR REGISTRO
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             </div>
