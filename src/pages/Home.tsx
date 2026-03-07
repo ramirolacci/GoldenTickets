@@ -184,7 +184,7 @@ export default function Home() {
 
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative">
       {/* Hero Section */}
       <section className="relative pt-0 pb-24 px-4 overflow-hidden">
         <div className="absolute inset-0 z-0">
@@ -295,7 +295,7 @@ export default function Home() {
           </motion.div>
 
           {/* Botones ORO, PLATA, BRONCE - diseño moderno e innovador */}
-          <div className="flex justify-center items-center gap-5 md:gap-7 mb-20">
+          <div className="flex justify-center items-center gap-5 md:gap-7 mb-20 relative">
             {(['oro', 'plata', 'bronce'] as TicketTier[]).map((tier, idx) => (
               <motion.button
                 key={tier}
@@ -370,7 +370,7 @@ export default function Home() {
           {/* Golden Ticket - Molde con inputs */}
           <motion.div
             id="tarjeta-previa"
-            className="max-w-md mx-auto scroll-mt-32"
+            className="max-w-md mx-auto scroll-mt-32 relative"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
@@ -675,46 +675,50 @@ export default function Home() {
 
       {/* Steps Section */}
       <section className="py-24 px-4 relative">
-        <div className="container mx-auto max-w-4xl">
+        <div className="container mx-auto max-w-4xl relative">
           <h2 className="text-4xl font-serif text-center mb-16 text-migusto-crema">
             El camino a la <span className="text-migusto-rojo italic">experiencia</span>
           </h2>
-          <div className="space-y-4">
-            {/* Paso 0 - Distintivo especial */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0 }}
-              className="flex items-center space-x-6 glass-card p-6 rounded-2xl border-2 border-migusto-dorado/50 bg-gradient-to-r from-migusto-dorado/10 to-transparent hover:bg-migusto-dorado/20 transition-all group relative overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 text-migusto-dorado/10 text-6xl font-black">¡</div>
-              <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-migusto-dorado to-amber-700 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-lg ring-4 ring-migusto-dorado/30">
-                0
-              </div>
-              <p className="text-xl text-migusto-crema font-bold">{'Encontraste un ticket especial en tu pedido'}</p>
-              <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
-                <CheckCircle2 className="h-8 w-8 text-migusto-dorado" />
-              </div>
-            </motion.div>
+          <div className="space-y-4 relative">
             {[
-              { step: 1, text: 'Presentate a la sucursal de Vicente Lopez con tu DNI fisico' },
+              { step: 1, text: 'Encontraste un ticket especial en tu pedido' },
               { step: 2, text: 'Validamos ID y DNI asociado al ticket.' },
               { step: 3, text: 'Entregamos tu Tarjeta Lovers' },
               { step: 4, text: 'Disfrutá tu canje mensual' }
-            ].map(({ step, text }) => (
+            ].map(({ step, text }, idx) => (
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ delay: step * 0.1 }}
                 key={step}
-                className="flex items-center space-x-6 glass-card p-6 rounded-2xl hover:bg-white/10 transition-all group"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{
+                  opacity: 1,
+                  x: [null, 20, 0],
+                  backgroundColor: ["rgba(255,255,255,0)", "rgba(255,255,255,0.1)", "rgba(255,255,255,0.05)"]
+                }}
+                viewport={{ once: true, amount: 0.8 }}
+                transition={{
+                  delay: idx * 3,
+                  duration: 3,
+                  times: [0, 0.5, 1]
+                }}
+                className="flex items-center space-x-6 glass-card p-6 rounded-2xl transition-all group relative overflow-hidden"
               >
                 <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-migusto-rojo to-migusto-rojo-oscuro rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-lg ring-4 ring-migusto-rojo/20">
                   {step}
                 </div>
                 <p className="text-xl text-migusto-crema/90 font-medium">{text}</p>
-                <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
-                  <CheckCircle2 className="h-8 w-8 text-migusto-rojo" />
+                <div className="ml-auto">
+                  <motion.div
+                    initial={{ color: "#ef4444", opacity: 0.4 }}
+                    whileInView={{ color: "#22c55e", opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ 
+                      delay: (idx * 3) + 0.5, 
+                      duration: 2.5,
+                      ease: "easeInOut"
+                    }}
+                  >
+                    <CheckCircle2 className="h-8 w-8" />
+                  </motion.div>
                 </div>
               </motion.div>
             ))}
@@ -723,8 +727,8 @@ export default function Home() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-24 px-4 bg-black/10 backdrop-blur-sm">
-        <div className="container mx-auto max-w-4xl">
+      <section className="py-24 px-4 bg-black/10 backdrop-blur-sm relative">
+        <div className="container mx-auto max-w-4xl relative">
           <h2 className="text-4xl font-serif text-center mb-16 text-migusto-crema">
             Preguntas <span className="text-gold-gradient italic">Frecuentes</span>
           </h2>
@@ -732,7 +736,7 @@ export default function Home() {
             {faqs.map((faq, index) => (
               <div
                 key={index}
-                className="overflow-hidden"
+                className="overflow-hidden relative"
               >
                 <button
                   onClick={() => setOpenFaq(openFaq === index ? null : index)}
@@ -753,12 +757,14 @@ export default function Home() {
                   <div className="px-8 py-6 text-migusto-crema/70 leading-relaxed text-lg italic flex flex-col items-start gap-4">
                     {faq.answer}
                     {faq.question === '¿Dónde?' && (
-                      <button
-                        onClick={() => document.getElementById('ubicacion-mapa')?.scrollIntoView({ behavior: 'smooth' })}
-                        className="text-xs font-black uppercase tracking-widest px-4 py-2 bg-white/10 hover:bg-migusto-rojo rounded-full transition-all border border-white/10 hover:border-transparent"
+                      <a
+                        href="https://www.google.com/maps/search/?api=1&query=Mi+Gusto+Vicente+Lopez+Av.+del+Libertador+962"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs font-black uppercase tracking-widest px-4 py-2 bg-white/10 hover:bg-migusto-rojo rounded-full transition-all border border-white/10 hover:border-transparent inline-block"
                       >
                         Ver ubicación
-                      </button>
+                      </a>
                     )}
                   </div>
                 </motion.div>
@@ -771,8 +777,8 @@ export default function Home() {
 
 
       {/* Terms Section */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto max-w-6xl">
+      <section className="py-16 px-4 relative">
+        <div className="container mx-auto max-w-6xl relative">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               { icon: AlertCircle, title: 'Personal e Intransferible', text: 'Solo válido para el titular registrado' },
