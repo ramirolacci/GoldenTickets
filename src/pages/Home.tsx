@@ -6,7 +6,7 @@ import { EpicTitle, EpicSubtitle } from '../components/EpicText';
 const faqs = [
   {
     question: '¿En mi Pack de 12 recibí un cupón, qué hago?',
-    answer: 'Dirigite al local Mi Gusto Vicente López (Av. del Libertador 962) con cupón y DNI.'
+    answer: 'Debes canjearlo en esta web e ir por primera vez a canjear tu primer pack 12 gratis, ahí recibirás tu Lover Ticket para poder retirar tu pack cada mes.'
   },
   {
     question: '¿Cómo canjeo cada mes?',
@@ -22,15 +22,11 @@ const faqs = [
   },
   {
     question: '¿Dónde?',
-    answer: 'Solo Vicente López.'
+    answer: 'Solo disponible en nuestra sucursal de Vicente López.'
   },
   {
     question: '¿Por app/web?',
     answer: 'No, solo presencial.'
-  },
-  {
-    question: '¿Cuántos premios?',
-    answer: '300 total.'
   },
   {
     question: '¿Otro puede usarlo?',
@@ -38,7 +34,7 @@ const faqs = [
   },
   {
     question: '¿Puedo regalarlo?',
-    answer: 'Solo antes de registrar datos.'
+    answer: 'Solo antes de registrar datos, se debe registrar a nombre de la persona que recibirá el regalo.'
   }
 ];
 
@@ -184,7 +180,7 @@ export default function Home() {
           >
             <span className="text-xs font-black text-amber-400/80 uppercase tracking-[0.4em] block mb-3">Elegí tu nivel</span>
             <h2 className="text-5xl md:text-6xl font-bold text-migusto-crema">
-              Niveles de <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500 bg-clip-text text-transparent italic leading-[1.2]">Premios</span>
+              Mi Gusto <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500 bg-clip-text text-transparent italic leading-[1.2]">Lovers</span> rewards
             </h2>
           </motion.div>
 
@@ -414,12 +410,46 @@ export default function Home() {
                   animate={{ height: openFaq === index ? 'auto' : 0, opacity: openFaq === index ? 1 : 0 }}
                   className="overflow-hidden"
                 >
-                  <div className="px-8 py-6 text-migusto-crema/70 leading-relaxed text-lg italic">
+                  <div className="px-8 py-6 text-migusto-crema/70 leading-relaxed text-lg italic flex flex-col items-start gap-4">
                     {faq.answer}
+                    {faq.question === '¿Dónde?' && (
+                      <button
+                        onClick={() => document.getElementById('ubicacion-mapa')?.scrollIntoView({ behavior: 'smooth' })}
+                        className="text-xs font-black uppercase tracking-widest px-4 py-2 bg-white/10 hover:bg-migusto-rojo rounded-full transition-all border border-white/10 hover:border-transparent"
+                      >
+                        Ver ubicación
+                      </button>
+                    )}
                   </div>
                 </motion.div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Location/Map Section */}
+      <section id="ubicacion-mapa" className="py-24 px-4 relative overflow-hidden">
+        <div className="absolute inset-0 bg-migusto-rojo/5" />
+        <div className="container mx-auto max-w-4xl relative z-10 text-center">
+          <div className="flex flex-col items-center">
+            <p className="text-xl md:text-2xl text-white/60 mb-2 uppercase tracking-widest font-medium">Solo disponible en:</p>
+            <p className="text-3xl md:text-5xl font-black text-migusto-crema mb-8 uppercase tracking-tighter">
+              Mi Gusto Vicente López <span className="text-migusto-rojo">·</span> Av. del Libertador 962
+            </p>
+            <motion.a
+              href="https://www.google.com/maps/search/?api=1&query=Mi+Gusto+Vicente+Lopez+Av.+del+Libertador+962"
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="inline-flex items-center gap-2 px-8 py-4 bg-white/5 border border-white/10 hover:border-migusto-rojo hover:bg-migusto-rojo/10 text-white rounded-xl font-black uppercase tracking-widest transition-all"
+            >
+              <span>abrir mapa</span>
+              <svg className="w-5 h-5 fill-current text-migusto-rojo" viewBox="0 0 24 24">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+              </svg>
+            </motion.a>
           </div>
         </div>
       </section>
