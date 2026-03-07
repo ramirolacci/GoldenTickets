@@ -296,9 +296,25 @@ export default function Home() {
               onKeyDown={(e) => e.key === 'Enter' && setIsCardFlipped(!isCardFlipped)}
             >
               <motion.div
-                animate={{ rotateY: isCardFlipped ? 180 : 0 }}
-                transition={{ duration: 0.6, ease: 'easeInOut' }}
-                className={`relative w-full max-w-sm mx-auto aspect-[1.586/1] rounded-2xl overflow-hidden border-2 ${tierStyles[selectedTier].border} bg-gradient-to-br ${tierStyles[selectedTier].gradient}`}
+                animate={{
+                  rotateY: isCardFlipped ? 180 : 0,
+                  background: selectedTier === 'oro' 
+                    ? 'linear-gradient(to bottom right, #6b5800, #c5a059, #4d3d00)'
+                    : selectedTier === 'plata'
+                    ? 'linear-gradient(to bottom right, #4a4a4a, #C0C0C0, #1a1a1a)'
+                    : 'linear-gradient(to bottom right, #6b3e26, #CD7F32, #2d1e16)',
+                  borderColor: selectedTier === 'oro'
+                    ? 'rgba(251, 191, 36, 0.5)' // amber-400
+                    : selectedTier === 'plata'
+                    ? 'rgba(203, 213, 225, 0.4)' // slate-300
+                    : 'rgba(217, 119, 6, 0.4)' // amber-600
+                }}
+                transition={{ 
+                  rotateY: { duration: 0.6, ease: 'easeInOut' },
+                  background: { duration: 0.8, ease: 'easeOut' },
+                  borderColor: { duration: 0.8, ease: 'easeOut' }
+                }}
+                className={`relative w-full max-w-sm mx-auto aspect-[1.586/1] rounded-2xl overflow-hidden border-2`}
                 style={{ transformStyle: 'preserve-3d' }}
               >
                 {/* Cara frontal */}
