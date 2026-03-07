@@ -677,7 +677,7 @@ export default function Home() {
       <section className="py-24 px-4 relative">
         <div className="container mx-auto max-w-4xl">
           <h2 className="text-4xl font-serif text-center mb-16 text-migusto-crema">
-            El camino al <span className="text-migusto-rojo italic">Premio</span>
+            El camino a la <span className="text-migusto-rojo italic">experiencia</span>
           </h2>
           <div className="space-y-4">
             {/* Paso 0 - Distintivo especial */}
