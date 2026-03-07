@@ -342,7 +342,7 @@ export default function Home() {
                   ? 'text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]'
                   : 'text-white/40 group-hover:text-white/70'
                   }`}>
-                  {tier}
+                  {tier === 'oro' ? 'Gold' : tier === 'plata' ? 'Silver' : 'Bronze'}
                 </h3>
 
                 <div className={`relative flex flex-col items-center mt-3 transition-colors ${selectedTier === tier ? 'text-white/90' : 'text-white/30 group-hover:text-white/50'
