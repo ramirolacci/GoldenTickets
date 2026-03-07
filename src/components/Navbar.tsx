@@ -21,13 +21,13 @@ export default function Navbar() {
 
           <div className="hidden md:flex items-center">
             <span className="text-[10px] font-black text-gold-gradient tracking-[0.3em] uppercase">
-              Golden Tickets
+              Ticket
             </span>
           </div>
 
           <div className="md:hidden flex items-center">
             <span className="text-[10px] font-black text-gold-gradient tracking-[0.3em] uppercase">
-              Golden Tickets
+              Ticket
             </span>
           </div>
         </div>

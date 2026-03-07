@@ -768,31 +768,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Location/Map Section */}
-      <section id="ubicacion-mapa" className="py-24 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-migusto-rojo/5" />
-        <div className="container mx-auto max-w-4xl relative z-10 text-center">
-          <div className="flex flex-col items-center">
-            <p className="text-xl md:text-2xl text-white/60 mb-2 uppercase tracking-widest font-medium">Solo disponible en:</p>
-            <p className="text-3xl md:text-5xl font-black text-migusto-crema mb-8 uppercase tracking-tighter">
-              Mi Gusto Vicente López <span className="text-migusto-rojo">·</span> Av. del Libertador 962
-            </p>
-            <motion.a
-              href="https://www.google.com/maps/search/?api=1&query=Mi+Gusto+Vicente+Lopez+Av.+del+Libertador+962"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-2 px-8 py-4 bg-white/5 border border-white/10 hover:border-migusto-rojo hover:bg-migusto-rojo/10 text-white rounded-xl font-black uppercase tracking-widest transition-all"
-            >
-              <span>abrir mapa</span>
-              <svg className="w-5 h-5 fill-current text-migusto-rojo" viewBox="0 0 24 24">
-                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-              </svg>
-            </motion.a>
-          </div>
-        </div>
-      </section>
+
 
       {/* Terms Section */}
       <section className="py-16 px-4">
