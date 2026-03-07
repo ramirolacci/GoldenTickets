@@ -1022,14 +1022,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Final Footer Credits */}
-      <footer className="py-12 border-t border-white/5 bg-black/40 backdrop-blur-sm">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-white/40 text-sm font-medium tracking-tight">
-            © Desarrollado por el <span className="text-white/60 font-bold border-b border-white/20 pb-0.5">Departamento de Sistemas</span> de Mi Gusto | Todos los derechos reservados.
-          </p>
-        </div>
-      </footer>
+
     </div>
   );
 }
