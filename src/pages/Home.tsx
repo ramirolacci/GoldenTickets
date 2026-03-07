@@ -73,11 +73,13 @@ const tierStyles = {
 export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [selectedTier, setSelectedTier] = useState<TicketTier>('oro');
-  const [ccNum, setCcNum] = useState(['', '', '', '']);
-  const [expMonth, setExpMonth] = useState('');
-  const [expYear, setExpYear] = useState('');
-  const [cardName, setCardName] = useState('');
+  const [ticketId, setTicketId] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  
   const [isCardFlipped, setIsCardFlipped] = useState(false);
+  const [showConfirmAction, setShowConfirmAction] = useState(false);
+  const [isConfirmed, setIsConfirmed] = useState(false);
 
   // Parallax configuration for the rewards section
   const rewardsRef = useRef<HTMLElement>(null);
@@ -89,24 +91,19 @@ export default function Home() {
   const yGrid = useTransform(scrollYProgress, [0, 1], ["-20%", "20%"]);
   const yContentBase = useTransform(scrollYProgress, [0, 1], ["0%", "5%"]);
 
-  const handleCcNumChange = (index: number, value: string) => {
-    if (!/^\d*$/.test(value)) return;
-    const newCcNum = [...ccNum];
-    newCcNum[index] = value;
-    setCcNum(newCcNum);
-    if (value.length === 4 && index < 3) {
-      document.getElementById(`cc-num-${index + 1}`)?.focus();
-    }
-  };
+  const isFormComplete = ticketId.trim() !== '' && fullName.trim() !== '' && email.trim() !== '';
 
-  const handleExpChange = (type: 'month' | 'year', value: string) => {
-    if (!/^\d*$/.test(value)) return;
-    if (type === 'month') {
-      setExpMonth(value);
-      if (value.length === 2) document.getElementById('exp-year')?.focus();
+  const handleConfirmClick = () => {
+    if (!isFormComplete) return;
+    
+    if (!showConfirmAction) {
+      // First click: show verification prompt
+      setShowConfirmAction(true);
     } else {
-      setExpYear(value);
-      if (value.length === 2) document.getElementById('card-name')?.focus();
+      // Second click: confirm, lock, and flip
+      setIsConfirmed(true);
+      setShowConfirmAction(false);
+      setIsCardFlipped(true);
     }
   };
 
@@ -198,9 +195,9 @@ export default function Home() {
       </section>
 
       {/* Reward Cards Section - Botones clickeables */}
-      <motion.section 
-        ref={rewardsRef} 
-        id="niveles-premios" 
+      <motion.section
+        ref={rewardsRef}
+        id="niveles-premios"
         className="relative py-28 px-4 overflow-hidden scroll-mt-24"
       >
         {/* Fondo moderno - mesh gradient + grid sutil con Parallax */}
@@ -215,7 +212,7 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <span className="text-xs font-black text-amber-400/80 uppercase tracking-[0.4em] block mb-3">Elegí tu nivel</span>
+            <span className="text-xs font-black text-amber-400/80 uppercase tracking-[0.4em] block mb-3">Elegí tu ticket</span>
             <h2 className="text-5xl md:text-6xl font-bold text-migusto-crema">
               Mi Gusto <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500 bg-clip-text text-transparent italic leading-[1.2]">Lovers</span> rewards
             </h2>
@@ -304,27 +301,23 @@ export default function Home() {
 
             {/* Molde de tarjeta flipeable - placeholder para CodePen */}
             <div
-              className="perspective-[1000px] cursor-pointer"
-              onClick={() => setIsCardFlipped(!isCardFlipped)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => e.key === 'Enter' && setIsCardFlipped(!isCardFlipped)}
+              className="perspective-[1000px] relative"
             >
               <motion.div
                 animate={{
                   rotateY: isCardFlipped ? 180 : 0,
-                  background: selectedTier === 'oro' 
+                  background: selectedTier === 'oro'
                     ? 'linear-gradient(to bottom right, #6b5800, #c5a059, #4d3d00)'
                     : selectedTier === 'plata'
-                    ? 'linear-gradient(to bottom right, #4a4a4a, #C0C0C0, #1a1a1a)'
-                    : 'linear-gradient(to bottom right, #6b3e26, #CD7F32, #2d1e16)',
+                      ? 'linear-gradient(to bottom right, #4a4a4a, #C0C0C0, #1a1a1a)'
+                      : 'linear-gradient(to bottom right, #6b3e26, #CD7F32, #2d1e16)',
                   borderColor: selectedTier === 'oro'
                     ? 'rgba(251, 191, 36, 0.5)' // amber-400
                     : selectedTier === 'plata'
-                    ? 'rgba(203, 213, 225, 0.4)' // slate-300
-                    : 'rgba(217, 119, 6, 0.4)' // amber-600
+                      ? 'rgba(203, 213, 225, 0.4)' // slate-300
+                      : 'rgba(217, 119, 6, 0.4)' // amber-600
                 }}
-                transition={{ 
+                transition={{
                   rotateY: { duration: 0.6, ease: 'easeInOut' },
                   background: { duration: 0.8, ease: 'easeOut' },
                   borderColor: { duration: 0.8, ease: 'easeOut' }
@@ -337,72 +330,69 @@ export default function Home() {
                   className="absolute inset-0 flex flex-col p-6"
                   style={{ backfaceVisibility: 'hidden', transform: 'rotateY(0deg)' }}
                 >
-                  <div className="flex justify-between items-start w-full">
+                  {/* Overlay Confirmación */}
+                  {showConfirmAction && !isConfirmed && (
+                    <div className="absolute inset-0 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center z-20 rounded-2xl">
+                      <AlertCircle className="w-12 h-12 text-migusto-dorado mb-3" />
+                      <h4 className="text-xl font-black text-white uppercase tracking-wider mb-2">Verificá tus datos</h4>
+                      <p className="text-sm text-white/70 mb-4">Asegurate de que la información sea correcta antes de confirmar tu Golden Ticket.</p>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between items-start w-full relative z-10">
                     <span className={`text-lg font-black uppercase tracking-widest opacity-80 ${tierStyles[selectedTier].label}`}>
                       Mi Gusto Lovers
                     </span>
-                    <img 
-                      src={`${import.meta.env.BASE_URL}Logo Mi Gusto 2025.png`} 
-                      alt="Mi Gusto" 
-                      className="h-10 w-auto object-contain drop-shadow-md filter grayscale brightness-200 contrast-125" 
+                    <img
+                      src={`${import.meta.env.BASE_URL}Logo Mi Gusto 2025.png`}
+                      alt="Mi Gusto"
+                      className="h-10 w-auto object-contain drop-shadow-md filter grayscale brightness-200 contrast-125"
                       style={{ filter: selectedTier === 'oro' ? 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' : 'grayscale(1) brightness(2) drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
                     />
                   </div>
 
-                  {/* Card Number Inputs */}
-                  <div className="flex justify-between w-full mt-2 gap-2" onClick={(e) => e.stopPropagation()}>
-                    {[0, 1, 2, 3].map((index) => (
-                      <input
-                        key={index}
-                        id={`cc-num-${index}`}
-                        type="text"
-                        maxLength={4}
-                        value={ccNum[index]}
-                        onChange={(e) => handleCcNumChange(index, e.target.value)}
-                        placeholder="0000"
-                        className="w-full bg-transparent text-xl md:text-2xl font-mono text-white placeholder:text-white/30 focus:outline-none tracking-widest text-center"
-                      />
-                    ))}
-                  </div>
-
-                  {/* Exp Date & Name */}
-                  <div className="mt-auto flex justify-between items-end w-full" onClick={(e) => e.stopPropagation()}>
-                    <div className="flex flex-col w-3/5">
-                      <span className="text-[8px] uppercase tracking-widest text-white/50 mb-1 ml-1">Cardholder Name</span>
-                      <input
-                        id="card-name"
-                        type="text"
-                        placeholder="TU NOMBRE"
-                        value={cardName}
-                        onChange={(e) => setCardName(e.target.value.toUpperCase())}
-                        maxLength={24}
-                        className="bg-transparent text-sm md:text-base font-bold text-white placeholder:text-white/30 focus:outline-none tracking-widest uppercase w-full truncate"
-                      />
-                    </div>
-                    
-                    <div className="flex flex-col items-end justify-end w-2/5">
-                      <span className="text-[8px] uppercase tracking-widest text-white/50 mb-1 mr-1">Valid Thru</span>
-                      <div className="flex items-center text-sm font-mono gap-1">
+                  {/* Inputs Section */}
+                  <div className="flex flex-col flex-1 justify-end w-full relative z-10 pb-2">
+                    {/* Row 1: ID & Name */}
+                    <div className="flex justify-between items-end gap-4 mb-4">
+                      {/* ID Input */}
+                      <div className="flex-[0.4]">
                         <input
-                          id="exp-month"
                           type="text"
-                          placeholder="MM"
-                          value={expMonth}
-                          onChange={(e) => handleExpChange('month', e.target.value)}
-                          maxLength={2}
-                          className="w-7 bg-transparent text-white placeholder:text-white/30 focus:outline-none text-center"
-                        />
-                        <span className="text-white/40">/</span>
-                        <input
-                          id="exp-year"
-                          type="text"
-                          placeholder="AA"
-                          value={expYear}
-                          onChange={(e) => handleExpChange('year', e.target.value)}
-                          maxLength={2}
-                          className="w-7 bg-transparent text-white placeholder:text-white/30 focus:outline-none text-center"
+                          maxLength={12}
+                          value={ticketId}
+                          onChange={(e) => { setTicketId(e.target.value.toUpperCase()); setShowConfirmAction(false); }}
+                          disabled={isConfirmed}
+                          placeholder="0000 0000"
+                          className="w-full bg-transparent text-xl md:text-2xl font-mono text-white placeholder:text-white/40 focus:outline-none tracking-widest transition-colors disabled:opacity-80 disabled:cursor-default"
                         />
                       </div>
+
+                      {/* Name Input */}
+                      <div className="flex-[0.6]">
+                        <input
+                          type="text"
+                          placeholder="TU NOMBRE"
+                          value={fullName}
+                          onChange={(e) => { setFullName(e.target.value.toUpperCase()); setShowConfirmAction(false); }}
+                          maxLength={32}
+                          disabled={isConfirmed}
+                          className="w-full bg-transparent text-sm md:text-base font-bold text-white placeholder:text-white/40 focus:outline-none tracking-widest uppercase text-right truncate disabled:opacity-80 disabled:cursor-default"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Row 2: Email */}
+                    <div className="w-full">
+                      <input
+                        type="email"
+                        placeholder="CORREO ELECTRÓNICO"
+                        value={email}
+                        onChange={(e) => { setEmail(e.target.value); setShowConfirmAction(false); }}
+                        maxLength={50}
+                        disabled={isConfirmed}
+                        className="w-full bg-transparent text-xs md:text-sm font-mono text-white placeholder:text-white/40 focus:outline-none tracking-[0.1em] truncate disabled:opacity-80 disabled:cursor-default"
+                      />
                     </div>
                   </div>
                 </div>
@@ -415,9 +405,26 @@ export default function Home() {
                   <p className="text-migusto-crema/80 text-sm text-center px-4">
                     Términos y condiciones · Válido solo en Vicente López
                   </p>
-                  <p className="text-migusto-crema/40 text-[10px] mt-6 uppercase">Click para voltear</p>
                 </div>
               </motion.div>
+            </div>
+
+            {/* Submit Button */}
+            <div className="mt-10 flex justify-center">
+               <button
+                 type="button"
+                 disabled={!isFormComplete || isConfirmed}
+                 onClick={handleConfirmClick}
+                 className={`px-10 py-4 rounded-xl font-black uppercase tracking-widest transition-all duration-300 ${
+                   !isFormComplete || isConfirmed 
+                     ? 'bg-white/5 text-white/20 border border-white/5 cursor-not-allowed'
+                     : showConfirmAction
+                       ? 'bg-amber-500 text-black hover:bg-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.4)] hover:shadow-[0_0_30px_rgba(245,158,11,0.6)] transform hover:-translate-y-1'
+                       : 'bg-migusto-rojo text-white hover:bg-migusto-rojo-claro shadow-premium hover:shadow-[0_0_20px_rgba(220,38,38,0.5)] transform hover:-translate-y-1'
+                 }`}
+               >
+                 {isConfirmed ? 'Ticket Confirmado' : showConfirmAction ? 'Sí, Confirmar Ticket' : 'Confirmar'}
+               </button>
             </div>
           </motion.div>
         </motion.div>
