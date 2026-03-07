@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { 
-  CheckCircle2, 
-  ChevronDown, 
-  AlertCircle 
+import {
+  CheckCircle2,
+  ChevronDown,
+  AlertCircle,
+  MapPin
 } from 'lucide-react';
 import { EpicTitle, EpicSubtitle } from '../components/EpicText';
 
@@ -121,7 +122,7 @@ export default function Home() {
   const handleTicketIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
     setTicketId(value);
-    
+
     if (idError) setIdError(null);
     if (isCardFlipped) setIsCardFlipped(false);
   };
@@ -136,7 +137,7 @@ export default function Home() {
       // Intentamos machear con la base de datos para el estilo,
       // pero si no existe, permitimos continuar con estilo 'oro' por defecto.
       const matchedTier = validDatabaseIds[ticketId] || 'oro';
-      
+
       setSelectedTier(matchedTier);
       setIsCardFlipped(true);
       setIdError(null);
@@ -219,12 +220,19 @@ export default function Home() {
                 delay={0.5}
               />
             </div>
-            <EpicSubtitle
-              text="¡Bienvenidos! Sé parte del exclusivo club Lovers"
-              goldWord="Lovers"
-              className="text-xl md:text-3xl mb-12 max-w-2xl mx-auto"
-              delay={0.4}
-            />
+            <div className="mb-12">
+              <EpicSubtitle
+                text="¡Bienvenidos!"
+                className="text-2xl md:text-5xl font-black block mb-4"
+                delay={0.4}
+              />
+              <EpicSubtitle
+                text="Sé parte del exclusivo club Mi Gusto Lovers"
+                goldWord="Lovers"
+                className="text-lg md:text-2xl max-w-2xl mx-auto block opacity-80"
+                delay={0.8}
+              />
+            </div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -329,12 +337,11 @@ export default function Home() {
                   ? `${tierStyles[tier].glow} shadow-[0_0_30px_rgba(255,255,255,0.2)] scale-110`
                   : 'bg-white/5 group-hover:bg-white/10'
                   }`}>
-                  <img 
+                  <img
                     src={`${import.meta.env.BASE_URL}Logo Mi Gusto 2025.png`}
                     alt="Mi Gusto"
-                    className={`h-12 w-auto md:h-16 object-contain transition-all duration-500 brightness-200 contrast-125 ${
-                      selectedTier === tier ? 'drop-shadow-lg' : 'grayscale opacity-40 group-hover:opacity-70 group-hover:grayscale-0'
-                    }`}
+                    className={`h-12 w-auto md:h-16 object-contain transition-all duration-500 brightness-200 contrast-125 ${selectedTier === tier ? 'drop-shadow-lg' : 'grayscale opacity-40 group-hover:opacity-70 group-hover:grayscale-0'
+                      }`}
                   />
                 </div>
 
@@ -370,12 +377,12 @@ export default function Home() {
           {/* Golden Ticket - Molde con inputs */}
           <motion.div
             id="tarjeta-previa"
-            className="max-w-md mx-auto scroll-mt-32 relative"
+            className="max-w-2xl mx-auto scroll-mt-32 relative"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
             <h3 className="text-xl font-serif font-bold text-migusto-crema text-center mb-6">
-              Tu Golden Ticket
+              Tu Lover Ticket
             </h3>
 
             {/* Inputs eliminados, ahora están dentro de la tarjeta */}
@@ -408,28 +415,28 @@ export default function Home() {
                   background: { duration: 0.8, ease: 'easeOut' },
                   borderColor: { duration: 0.8, ease: 'easeOut' }
                 }}
-                className={`relative w-full max-w-sm mx-auto aspect-[1.586/1] rounded-2xl border-2 ${isRegistered ? 'cursor-pointer' : ''}`}
+                className={`relative w-full max-w-xl mx-auto aspect-[1.586/1] rounded-3xl border-2 ${isRegistered ? 'cursor-pointer' : ''}`}
                 style={{ transformStyle: 'preserve-3d' }}
               >
                 {/* Cara frontal */}
                 <div
-                  className="absolute inset-0 flex flex-col p-6 rounded-[14px] overflow-hidden"
-                  style={{ 
-                    backfaceVisibility: 'hidden', 
+                  className="absolute inset-0 flex flex-col p-10 rounded-[22px] overflow-hidden"
+                  style={{
+                    backfaceVisibility: 'hidden',
                     transform: 'rotateY(0deg)',
-                    zIndex: isCardFlipped ? 0 : 1 
+                    zIndex: isCardFlipped ? 0 : 1
                   }}
                 >
                   {/* Overlay Confirmación removido en esta etapa */}
 
                   <div className="flex justify-between items-start w-full relative z-10">
-                    <span className={`text-lg font-black uppercase tracking-widest opacity-80 ${tierStyles[selectedTier].label}`}>
+                    <span className={`text-xl font-black uppercase tracking-widest opacity-80 ${tierStyles[selectedTier].label}`}>
                       Mi Gusto Lovers
                     </span>
                     <img
                       src={`${import.meta.env.BASE_URL}Logo Mi Gusto 2025.png`}
                       alt="Mi Gusto"
-                      className="h-10 w-auto object-contain drop-shadow-md filter grayscale brightness-200 contrast-125"
+                      className="h-14 w-auto object-contain drop-shadow-md filter grayscale brightness-200 contrast-125"
                       style={{ filter: selectedTier === 'oro' ? 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' : 'grayscale(1) brightness(2) drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
                     />
                   </div>
@@ -447,19 +454,19 @@ export default function Home() {
                             value={ticketId}
                             onChange={handleTicketIdChange}
                             placeholder="MG000X"
-                            animate={idError ? { 
+                            animate={idError ? {
                               x: [0, -10, 10, -10, 10, -10, 10, 0],
                               color: ["#fff", "#ef4444", "#ef4444", "#fff"]
                             } : { x: 0, color: "#fff" }}
                             transition={{ duration: 1 }}
-                            className={`w-full bg-transparent text-4xl font-black font-mono placeholder:text-white/30 focus:outline-none tracking-[0.2em] transition-colors text-center shadow-none border-none`}
+                            className={`w-full bg-transparent text-6xl font-black font-mono placeholder:text-white/30 focus:outline-none tracking-[0.2em] transition-colors text-center shadow-none border-none`}
                           />
                         ) : (
                           <motion.span
                             key="id-printed"
                             initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
                             animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
-                            className={`block w-full text-4xl font-black font-mono tracking-[0.2em] text-center drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
+                            className={`block w-full text-6xl font-black font-mono tracking-[0.2em] text-center drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
                           >
                             {ticketId}
                           </motion.span>
@@ -474,25 +481,25 @@ export default function Home() {
                   cuando el ID ingresado en el frente es validado correctamente.
                 */}
                 <div
-                  className="absolute inset-0 flex flex-col p-6 overflow-hidden"
-                  style={{ 
-                    backfaceVisibility: 'hidden', 
+                  className="absolute inset-0 flex flex-col p-10 overflow-hidden"
+                  style={{
+                    backfaceVisibility: 'hidden',
                     transform: 'rotateY(180deg)',
                     zIndex: isCardFlipped ? 1 : 0
                   }}
                 >
                   {/* Header con Logo y Título - DORSO */}
-                  <div className="flex justify-between items-start w-full relative z-10 mb-2">
-                    <span className={`text-lg font-black uppercase tracking-widest opacity-80 ${tierStyles[selectedTier].label}`}>
+                  <div className="flex justify-between items-start w-full relative z-10 mb-4">
+                    <span className={`text-xl font-black uppercase tracking-widest opacity-80 ${tierStyles[selectedTier].label}`}>
                       Mi Gusto Lovers
                     </span>
                     <img
                       src={`${import.meta.env.BASE_URL}Logo Mi Gusto 2025.png`}
                       alt="Mi Gusto"
-                      className="h-8 w-auto object-contain brightness-200 contrast-125"
+                      className="h-12 w-auto object-contain brightness-200 contrast-125"
                     />
                   </div>
-                  <div className="flex flex-col gap-4 flex-1 justify-center w-full">
+                  <div className="flex flex-col gap-6 flex-1 justify-center w-full">
                     {/* NOMBRE Y APELLIDO - Full Width, Left Aligned */}
                     <div className="w-full">
                       <AnimatePresence mode="wait">
@@ -506,14 +513,14 @@ export default function Home() {
                             placeholder="NOMBRE Y APELLIDO"
                             value={regName}
                             onChange={handleNameChange}
-                            className="w-full bg-transparent text-3xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left uppercase"
+                            className="w-full bg-transparent text-5xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left uppercase"
                           />
                         ) : (
                           <motion.span
                             key="name-printed"
                             initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
                             animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
-                            className={`block w-full text-3xl font-black font-mono tracking-tighter text-left uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
+                            className={`block w-full text-5xl font-black font-mono tracking-tighter text-left uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
                           >
                             {regName}
                           </motion.span>
@@ -535,14 +542,14 @@ export default function Home() {
                               placeholder="11 1234-5678"
                               value={regPhone}
                               onChange={handlePhoneChange}
-                              className="w-full bg-transparent text-2xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left"
+                              className="w-full bg-transparent text-3xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left"
                             />
                           ) : (
                             <motion.span
                               key="phone-printed"
                               initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
                               animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
-                              className={`block w-full text-2xl font-black font-mono tracking-tighter text-left drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
+                              className={`block w-full text-3xl font-black font-mono tracking-tighter text-left drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
                             >
                               {regPhone}
                             </motion.span>
@@ -561,14 +568,14 @@ export default function Home() {
                               placeholder="EDAD"
                               value={regAge}
                               onChange={handleAgeChange}
-                              className="w-full bg-transparent text-2xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left"
+                              className="w-full bg-transparent text-3xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left"
                             />
                           ) : (
                             <motion.span
                               key="age-printed"
                               initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
                               animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
-                              className={`block w-full text-2xl font-black font-mono tracking-tighter text-left drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
+                              className={`block w-full text-3xl font-black font-mono tracking-tighter text-left drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
                             >
                               {regAge}
                             </motion.span>
@@ -590,14 +597,14 @@ export default function Home() {
                             placeholder="CORREO ELECTRÓNICO"
                             value={regEmail}
                             onChange={handleEmailChange}
-                            className="w-full bg-transparent text-xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left lowercase"
+                            className="w-full bg-transparent text-2xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left lowercase"
                           />
                         ) : (
                           <motion.span
                             key="email-printed"
                             initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
                             animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
-                            className={`block w-full text-xl font-black font-mono tracking-tighter text-left lowercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
+                            className={`block w-full text-2xl font-black font-mono tracking-tighter text-left lowercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
                           >
                             {regEmail}
                           </motion.span>
@@ -658,11 +665,10 @@ export default function Home() {
                     disabled={!isFormValid}
                     whileHover={isFormValid ? { scale: 1.05 } : {}}
                     whileTap={isFormValid ? { scale: 0.95 } : {}}
-                    className={`px-8 py-3 rounded-full text-base font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-2xl ${
-                      !isFormValid
-                        ? 'bg-white/5 text-white/20 cursor-not-allowed grayscale'
-                        : `bg-gradient-to-br ${tierStyles[selectedTier].gradient} text-white shadow-[0_10px_40px_rgba(0,0,0,0.4)]`
-                    }`}
+                    className={`px-8 py-3 rounded-full text-base font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-2xl ${!isFormValid
+                      ? 'bg-white/5 text-white/20 cursor-not-allowed grayscale'
+                      : `bg-gradient-to-br ${tierStyles[selectedTier].gradient} text-white shadow-[0_10px_40px_rgba(0,0,0,0.4)]`
+                      }`}
                   >
                     CONFIRMAR
                   </motion.button>
@@ -691,14 +697,14 @@ export default function Home() {
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{
                   opacity: 1,
-                  x: [null, 20, 0],
-                  backgroundColor: ["rgba(255,255,255,0)", "rgba(255,255,255,0.1)", "rgba(255,255,255,0.05)"]
+                  x: 0,
+                  backgroundColor: "rgba(255,255,255,0.05)"
                 }}
-                viewport={{ once: true, amount: 0.8 }}
+                viewport={{ once: true, amount: 0.2 }}
                 transition={{
-                  delay: idx * 3,
-                  duration: 3,
-                  times: [0, 0.5, 1]
+                  delay: idx * 0.15,
+                  duration: 0.8,
+                  ease: "easeOut"
                 }}
                 className="flex items-center space-x-6 glass-card p-6 rounded-2xl transition-all group relative overflow-hidden"
               >
@@ -711,10 +717,10 @@ export default function Home() {
                     initial={{ color: "#ef4444", opacity: 0.4 }}
                     whileInView={{ color: "#22c55e", opacity: 1 }}
                     viewport={{ once: true }}
-                    transition={{ 
-                      delay: (idx * 3) + 0.5, 
-                      duration: 2.5,
-                      ease: "easeInOut"
+                    transition={{
+                      delay: (idx * 0.15) + 0.4,
+                      duration: 0.6,
+                      ease: "easeOut"
                     }}
                   >
                     <CheckCircle2 className="h-8 w-8" />
@@ -757,14 +763,12 @@ export default function Home() {
                   <div className="px-8 py-6 text-migusto-crema/70 leading-relaxed text-lg italic flex flex-col items-start gap-4">
                     {faq.answer}
                     {faq.question === '¿Dónde?' && (
-                      <a
-                        href="https://www.google.com/maps/search/?api=1&query=Mi+Gusto+Vicente+Lopez+Av.+del+Libertador+962"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        onClick={() => document.getElementById('ubicacion-sucursal')?.scrollIntoView({ behavior: 'smooth' })}
                         className="text-xs font-black uppercase tracking-widest px-4 py-2 bg-white/10 hover:bg-migusto-rojo rounded-full transition-all border border-white/10 hover:border-transparent inline-block"
                       >
                         Ver ubicación
-                      </a>
+                      </button>
                     )}
                   </div>
                 </motion.div>
@@ -798,6 +802,58 @@ export default function Home() {
               </div>
             ))}
           </div>
+
+          {/* Bloque de Ubicación */}
+          <motion.div
+            id="ubicacion-sucursal"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="mt-20 flex flex-col items-center scroll-mt-32"
+          >
+            <div className="glass-card p-10 rounded-[2.5rem] border border-white/10 max-w-2xl w-full text-center relative overflow-hidden group">
+              <div className="absolute inset-0 bg-migusto-rojo/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+              <div className="relative z-10">
+                {/* Wireframe de Mapa */}
+                <div className="mb-8 relative group/map overflow-hidden rounded-3xl border border-white/10 aspect-video bg-black/40">
+                  <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#fff_1px,transparent_1px)] bg-[size:20px_20px]" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-migusto-rojo/20 blur-2xl rounded-full animate-pulse" />
+                      <MapPin className="h-16 w-16 text-migusto-rojo relative z-10 filter drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]" />
+                    </div>
+                  </div>
+                  {/* Sutiles líneas de mapa ficticias */}
+                  <svg className="absolute inset-0 w-full h-full opacity-10" viewBox="0 0 100 100">
+                    <path d="M0 20 L100 20 M0 50 L100 50 M0 80 L100 80 M20 0 L20 100 M50 0 L50 100 M80 0 L80 100" stroke="white" strokeWidth="0.5" fill="none" />
+                  </svg>
+                  <div className="absolute bottom-4 left-4 right-4 p-3 bg-black/60 backdrop-blur-md rounded-xl border border-white/5 flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                      <span className="text-[10px] font-black uppercase tracking-tight text-white/70">Sucursal Activa</span>
+                    </div>
+                    <span className="text-[8px] font-medium text-white/30 uppercase tracking-widest leading-none text-right">Vicente López<br />Libertador 962</span>
+                  </div>
+                </div>
+
+                <p className="text-lg text-migusto-crema/60 mb-8 leading-relaxed">
+                  Esta promoción es válida únicamente en <br />
+                  <span className="text-white font-black">Mi Gusto Vicente López</span><br />
+                  <span className="text-migusto-rojo italic font-medium">Av. del Libertador 962</span>
+                </p>
+
+                <a
+                  href="https://www.google.com/maps?q=Mi+Gusto+Vicente+Lopez+Av.+del+Libertador+962"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center space-x-3 px-10 py-4 bg-white/5 hover:bg-migusto-rojo text-white rounded-full transition-all duration-300 border border-white/10 hover:border-transparent font-black tracking-widest text-sm uppercase group/btn"
+                >
+                  <MapPin className="h-4 w-4 group-hover:animate-bounce" />
+                  <span>Abrir Mapa</span>
+                </a>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
     </div>
