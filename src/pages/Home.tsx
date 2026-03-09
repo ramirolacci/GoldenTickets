@@ -142,7 +142,7 @@ export default function Home() {
    * - Resetea estados de error y de giro al modificar.
    */
   const handleTicketIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
+    const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10);
     setTicketId(value);
 
     if (idError) setIdError(null);
@@ -155,11 +155,11 @@ export default function Home() {
    */
   useEffect(() => {
     const validateTicket = async () => {
-      if (ticketId.length === 6) {
-        // 1. Validación de Formato: MG + 3 números + (G, S, B)
-        const ticketRegex = /^MG\d{3}[GSB]$/;
+      if (ticketId.length === 10) {
+        // 1. Validación de Formato: MG + 8 caracteres alfanuméricos
+        const ticketRegex = /^MG[A-Z0-9]{8}$/;
         if (!ticketRegex.test(ticketId)) {
-          setIdError('Formato inválido (Ej: MG001G)');
+          setIdError('Formato inválido (Ej: MG12345678)');
           return;
         }
 
@@ -477,10 +477,10 @@ export default function Home() {
                 whileHover={(!isCardFlipped && !isRegistered) ? { scale: 1.1, y: -12 } : {}}
                 whileTap={(!isCardFlipped && !isRegistered) ? { scale: 0.95 } : {}}
                 className={`group relative flex flex-col items-center rounded-3xl md:rounded-[2.5rem] 
-                  ${tier === 'oro' 
-                    ? 'w-28 md:w-56 p-4 md:p-10' 
-                    : tier === 'plata' 
-                      ? 'w-24 md:w-44 p-3 md:p-7' 
+                  ${tier === 'oro'
+                    ? 'w-28 md:w-56 p-4 md:p-10'
+                    : tier === 'plata'
+                      ? 'w-24 md:w-44 p-3 md:p-7'
                       : 'w-20 md:w-36 p-2 md:p-5'
                   } overflow-hidden transition-all duration-700 premium-border ${(isCardFlipped || isRegistered) ? 'opacity-40 grayscale-[0.5] cursor-not-allowed' : ''} ${selectedTier === tier
                     ? `animate-float ${tierStyles[tier].shadow} bg-gradient-to-br ${tierStyles[tier].gradient} border-2 ${tierStyles[tier].border}`
@@ -630,10 +630,10 @@ export default function Home() {
                           <motion.input
                             key="id-input"
                             type="text"
-                            maxLength={6}
+                            maxLength={10}
                             value={ticketId}
                             onChange={handleTicketIdChange}
-                            placeholder="MG000X"
+                            placeholder="MGXXXXXXXX"
                             disabled={isValidating}
                             animate={idError ? {
                               x: [0, -10, 10, -10, 10, -10, 10, 0],
