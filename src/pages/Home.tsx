@@ -595,7 +595,7 @@ export default function Home() {
                   background: { duration: 0.8, ease: 'easeOut' },
                   borderColor: { duration: 0.8, ease: 'easeOut' }
                 }}
-                className={`relative w-full max-w-xl mx-auto aspect-[1.586/1] rounded-3xl border-2 ${isRegistered ? 'cursor-pointer' : ''}`}
+                className={`relative w-full max-w-2xl mx-auto aspect-[677/313] rounded-3xl border-2 ${isRegistered ? 'cursor-pointer' : ''}`}
                 style={{ transformStyle: 'preserve-3d' }}
               >
                 {/* Cara frontal */}
@@ -609,20 +609,15 @@ export default function Home() {
                 >
                   {/* Overlay Confirmación removido en esta etapa */}
 
-                  <div className="flex justify-between items-start w-full relative z-10">
-                    <span className={`text-sm md:text-xl font-black uppercase tracking-widest opacity-80 ${tierStyles[selectedTier].label}`}>
-                      Mi Gusto Lovers
-                    </span>
-                    <img
-                      src={`${import.meta.env.BASE_URL}Logo Mi Gusto 2025.png`}
-                      alt="Mi Gusto"
-                      className="h-8 md:h-14 w-auto object-contain drop-shadow-md filter grayscale brightness-200 contrast-125"
-                      style={{ filter: selectedTier === 'oro' ? 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' : 'grayscale(1) brightness(2) drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
-                    />
-                  </div>
+                  {/* Mockup Overlay */}
+                  <img
+                    src={`${import.meta.env.BASE_URL}ticketMockup.png`}
+                    alt=""
+                    className="absolute inset-0 w-full h-full object-fill z-20 pointer-events-none opacity-90"
+                  />
 
-                  {/* Inputs Section */}
-                  <div className="flex flex-col flex-1 justify-center items-center w-full relative z-10 pt-4">
+                  {/* Inputs Section - Positioned over the mockup's ID field */}
+                  <div className="absolute bottom-[17%] right-[11%] w-[35%] h-[12%] z-30 flex items-center justify-center">
                     {/* ID Input Only */}
                     <div className="w-full text-center">
                       <AnimatePresence mode="wait">
@@ -633,21 +628,21 @@ export default function Home() {
                             maxLength={10}
                             value={ticketId}
                             onChange={handleTicketIdChange}
-                            placeholder="MGXXXXXXXX"
+                            placeholder="MG-XXXXXXXX"
                             disabled={isValidating}
                             animate={idError ? {
                               x: [0, -10, 10, -10, 10, -10, 10, 0],
-                              color: ["#fff", "#ef4444", "#ef4444", "#fff"]
-                            } : { x: 0, color: "#fff" }}
+                              color: ["#000", "#ef4444", "#ef4444", "#000"]
+                            } : { x: 0, color: "#000" }}
                             transition={{ duration: 1 }}
-                            className={`w-full bg-transparent text-3xl md:text-6xl font-black font-mono placeholder:text-white/30 focus:outline-none tracking-[0.2em] transition-colors text-center shadow-none border-none ${isValidating ? 'animate-pulse opacity-50' : ''}`}
+                            className={`w-full bg-transparent text-[12px] md:text-[24px] font-black font-mono placeholder:text-black/40 focus:outline-none tracking-normal transition-colors text-center shadow-none border-none ${isValidating ? 'animate-pulse opacity-50' : ''}`}
                           />
                         ) : (
                           <motion.span
                             key="id-printed"
-                            initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
-                            animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
-                            className={`block w-full text-3xl md:text-6xl font-black font-mono tracking-[0.2em] text-center drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
+                            initial={{ scale: 1.2, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            className={`block w-full text-[12px] md:text-[24px] font-black font-mono tracking-normal text-center text-black/80`}
                           >
                             {ticketId}
                           </motion.span>
@@ -662,7 +657,7 @@ export default function Home() {
                   cuando el ID ingresado en el frente es validado correctamente.
                 */}
                 <div
-                  className="absolute inset-0 flex flex-col p-6 md:p-10 overflow-hidden"
+                  className="absolute inset-0 flex flex-col p-3 md:p-10 overflow-hidden"
                   style={{
                     backfaceVisibility: 'hidden',
                     transform: 'rotateY(180deg)',
@@ -670,17 +665,18 @@ export default function Home() {
                   }}
                 >
                   {/* Header con Logo y Título - DORSO */}
-                  <div className="flex justify-between items-start w-full relative z-10 mb-2 md:mb-4">
-                    <span className={`text-sm md:text-xl font-black uppercase tracking-widest opacity-80 ${tierStyles[selectedTier].label}`}>
-                      Mi Gusto Lovers
+                  <div className="flex justify-between items-start w-full relative z-10 mb-1 md:mb-6">
+                    <span className={`text-[12px] md:text-lg font-black uppercase tracking-widest opacity-60 ${tierStyles[selectedTier].label}`}>
+                      Registro de Socio
                     </span>
                     <img
                       src={`${import.meta.env.BASE_URL}Logo Mi Gusto 2025.png`}
                       alt="Mi Gusto"
-                      className="h-8 md:h-12 w-auto object-contain brightness-200 contrast-125"
+                      className="h-5 md:h-10 w-auto object-contain brightness-200 opacity-60"
                     />
                   </div>
-                  <div className="flex flex-col gap-3 md:gap-6 flex-1 justify-center w-full">
+
+                  <div className="flex flex-col gap-2 md:gap-8 flex-1 justify-center w-full relative z-10">
                     {/* NOMBRE Y APELLIDO - Full Width, Left Aligned */}
                     <div className="w-full">
                       <AnimatePresence mode="wait">
@@ -694,14 +690,14 @@ export default function Home() {
                             placeholder="NOMBRE Y APELLIDO"
                             value={regName}
                             onChange={handleNameChange}
-                            className="w-full bg-transparent text-2xl md:text-5xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left uppercase"
+                            className="w-full bg-transparent text-3xl md:text-5xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left uppercase"
                           />
                         ) : (
                           <motion.span
                             key="name-printed"
                             initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
                             animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
-                            className={`block w-full text-2xl md:text-5xl font-black font-mono tracking-tighter text-left uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
+                            className={`block w-full text-3xl md:text-5xl font-black font-mono tracking-tighter text-left uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
                           >
                             {regName}
                           </motion.span>
@@ -709,8 +705,8 @@ export default function Home() {
                       </AnimatePresence>
                     </div>
 
-                    {/* CELULAR Y EDAD - Same Row */}
-                    <div className="w-full flex gap-4">
+                    {/* CELULAR Y DNI - Same Row */}
+                    <div className="w-full flex gap-5 md:gap-8">
                       <div className="flex-1">
                         <AnimatePresence mode="wait">
                           {!isRegistered ? (
@@ -738,7 +734,7 @@ export default function Home() {
                           )}
                         </AnimatePresence>
                       </div>
-                      <div className="w-40">
+                      <div className="w-28 md:w-48">
                         <AnimatePresence mode="wait">
                           {!isRegistered ? (
                             <motion.input
@@ -780,14 +776,14 @@ export default function Home() {
                             placeholder="CORREO ELECTRÓNICO"
                             value={regEmail}
                             onChange={handleEmailChange}
-                            className="w-full bg-transparent text-xs md:text-2xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left lowercase"
+                            className="w-full bg-transparent text-[14px] md:text-2xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left lowercase"
                           />
                         ) : (
                           <motion.span
                             key="email-printed"
                             initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
                             animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
-                            className={`block w-full text-xs md:text-2xl font-black font-mono tracking-tighter text-left lowercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
+                            className={`block w-full text-[14px] md:text-2xl font-black font-mono tracking-tighter text-left lowercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
                           >
                             {regEmail}
                           </motion.span>
@@ -795,6 +791,9 @@ export default function Home() {
                       </AnimatePresence>
                     </div>
                   </div>
+
+                  {/* Background overlay suave para la parte de atrás */}
+                  <div className="absolute inset-0 bg-black/40 z-0 pointer-events-none" />
                 </div>
               </motion.div>
             </div>
