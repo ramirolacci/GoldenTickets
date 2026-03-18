@@ -6,7 +6,7 @@ import {
   AlertCircle,
   MapPin
 } from 'lucide-react';
-import { EpicTitle, EpicSubtitle } from '../components/EpicText';
+import { EpicSubtitle } from '../components/EpicText';
 import { supabase } from '../lib/supabase';
 
 const faqs = [
@@ -448,7 +448,7 @@ export default function Home() {
           </motion.div>
 
           {/* Botones ORO, PLATA, BRONCE - diseño moderno e innovador */}
-          <div className="flex justify-center items-center gap-3 md:gap-7 mb-12 md:mb-20 relative px-2">
+          <div id="botones-tickets" className="flex justify-center items-center gap-3 md:gap-7 mb-12 md:mb-20 relative px-2 scroll-mt-24">
             {(['oro', 'plata', 'bronce'] as TicketTier[]).map((tier, idx) => (
               <motion.button
                 key={tier}
@@ -458,7 +458,7 @@ export default function Home() {
                   setSelectedTier(tier);
                   setTicketId('');
                   setIdError(null);
-                  document.getElementById('tarjeta-previa')?.scrollIntoView({ behavior: 'smooth' });
+                  document.getElementById('botones-tickets')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   
                   // Mostrar leyenda de ID por 5 segundos
                   if (hintTimeoutRef.current) clearTimeout(hintTimeoutRef.current);
