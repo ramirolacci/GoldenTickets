@@ -439,9 +439,9 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <span className="text-xs font-black text-amber-400/80 uppercase tracking-[0.4em] block mb-3">Elegí tu ticket</span>
+            <span className="text-xs font-black text-amber-400/80 uppercase tracking-[0.2em] block mb-3">Elegí tu ticket y activalo</span>
             <h2 className="text-5xl md:text-6xl font-bold text-migusto-crema">
-              Mi Gusto <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500 bg-clip-text text-transparent italic leading-[1.2]">Lovers</span> rewards
+              Convertite en <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500 bg-clip-text text-transparent italic leading-[1.2]">ANFITRIÓN </span> Mi Gusto
             </h2>
           </motion.div>
 
@@ -465,12 +465,8 @@ export default function Home() {
                 whileHover={(!isCardFlipped && !isRegistered) ? { scale: 1.1, y: -12 } : {}}
                 whileTap={(!isCardFlipped && !isRegistered) ? { scale: 0.95 } : {}}
                 className={`group relative flex flex-col items-center rounded-3xl md:rounded-[2.5rem] 
-                  ${tier === 'oro'
-                    ? 'w-28 md:w-56 p-4 md:p-10'
-                    : tier === 'plata'
-                      ? 'w-24 md:w-44 p-3 md:p-7'
-                      : 'w-20 md:w-36 p-2 md:p-5'
-                  } overflow-hidden transition-all duration-700 premium-border ${(isCardFlipped || isRegistered) ? 'opacity-40 grayscale-[0.5] cursor-not-allowed' : ''} ${selectedTier === tier
+                  w-28 md:w-56 p-4 md:p-10
+                  overflow-hidden transition-all duration-700 premium-border ${(isCardFlipped || isRegistered) ? 'opacity-40 grayscale-[0.5] cursor-not-allowed' : ''} ${selectedTier === tier
                     ? `animate-float ${tierStyles[tier].shadow} bg-gradient-to-br ${tierStyles[tier].gradient} border-2 ${tierStyles[tier].border}`
                     : 'bg-white/[0.03] backdrop-blur-xl border border-white/10 hover:border-white/30'
                   }`}
