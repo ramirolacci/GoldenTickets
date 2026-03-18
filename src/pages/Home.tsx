@@ -93,6 +93,8 @@ export default function Home() {
   const [isRegistered, setIsRegistered] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccessfullyConfirmed, setIsSuccessfullyConfirmed] = useState(false);
+  const [showIdHint, setShowIdHint] = useState(false);
+  const hintTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // --- PERSISTENCIA LOCALSTORAGE ---
   useEffect(() => {
@@ -457,6 +459,11 @@ export default function Home() {
                   setTicketId('');
                   setIdError(null);
                   document.getElementById('tarjeta-previa')?.scrollIntoView({ behavior: 'smooth' });
+                  
+                  // Mostrar leyenda de ID por 5 segundos
+                  if (hintTimeoutRef.current) clearTimeout(hintTimeoutRef.current);
+                  setShowIdHint(true);
+                  hintTimeoutRef.current = setTimeout(() => setShowIdHint(false), 5000);
                 }}
                 disabled={isCardFlipped || isRegistered}
                 initial={{ opacity: 0, y: 40 }}
@@ -545,9 +552,6 @@ export default function Home() {
               )}
             </AnimatePresence>
 
-            <h3 className="text-xl font-serif font-bold text-migusto-crema text-center mb-6">
-              Tu Lover Ticket
-            </h3>
 
             {/* Inputs eliminados, ahora están dentro de la tarjeta */}
 
@@ -781,6 +785,19 @@ export default function Home() {
                 </div>
               </motion.div>
             </div>
+            
+            <AnimatePresence>
+              {showIdHint && (
+                <motion.p
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="text-center mt-6 text-amber-200/60 font-medium text-sm tracking-wide"
+                >
+                  Encontrá tu ID en el dorso del ticket.
+                </motion.p>
+              )}
+            </AnimatePresence>
 
             {/* Error Message */}
             <AnimatePresence>
