@@ -342,7 +342,7 @@ export default function Home() {
   return (
     <div className="min-h-screen relative">
       {/* Hero Section */}
-      <section className="relative pt-0 pb-24 px-4 overflow-hidden relative">
+      <section className="relative min-h-screen flex flex-col justify-center pt-20 pb-36 px-4 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-migusto-rojo/10 blur-[150px] rounded-full"></div>
           <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-migusto-dorado/10 blur-[150px] rounded-full"></div>
@@ -366,12 +366,12 @@ export default function Home() {
                 transition={{ duration: 1, ease: "easeOut" }}
                 src={`${import.meta.env.BASE_URL}Logo_MiGusto_Experience.png`}
                 alt="Mi Gusto Experience"
-                className="h-48 md:h-72 w-auto mb-4"
+                className="h-56 md:h-80 w-auto mb-4"
               />
             </div>
             <div className="mb-12">
               <EpicSubtitle
-                text="DISFRUTÁ DE TU BENEFICIO EXCLUSIVO"
+                text="¡DISFRUTÁ DE TU BENEFICIO EXCLUSIVO!"
                 className="text-xl md:text-4xl font-black block mb-4 tracking-tight md:tracking-tighter"
                 delay={0.4}
               />
