@@ -24,7 +24,13 @@ export default function Validator() {
   const { register, handleSubmit, formState: { errors }, reset } = useForm<ValidatorForm>();
 
   useEffect(() => {
+    document.title = "Mi Gusto | Ticket System";
     loadValidatedTickets();
+    
+    // Opcionalmente restaurar el título al salir si es necesario
+    return () => {
+      document.title = "Mi Gusto | Ticket Ganador";
+    };
   }, []);
 
   const loadValidatedTickets = async () => {
