@@ -444,7 +444,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-16"
+            className={`text-center transition-all duration-500 ${isIdFocused ? 'h-0 opacity-0 mb-0 overflow-hidden' : 'mb-16'}`}
           >
             <span className="text-xs font-black text-amber-400/80 uppercase tracking-[0.2em] block mb-3">Elegí tu ticket y activalo</span>
             <h2 className="text-5xl md:text-6xl font-bold text-migusto-crema">
@@ -453,7 +453,7 @@ export default function Home() {
           </motion.div>
 
           {/* Botones ORO, PLATA, BRONCE - diseño moderno e innovador */}
-          <div id="botones-tickets" className="flex justify-center items-center gap-3 md:gap-7 mb-8 md:mb-10 relative px-2 scroll-mt-24">
+          <div id="botones-tickets" className={`flex justify-center items-center gap-3 md:gap-7 transition-all duration-500 relative px-2 scroll-mt-24 ${isIdFocused ? 'h-0 opacity-0 mb-0 overflow-hidden' : 'mb-8 md:mb-10 text-white'}`}>
             {(['oro', 'plata', 'bronce'] as const).map((tier, idx) => (
               <motion.button
                 key={tier}
@@ -525,7 +525,7 @@ export default function Home() {
           </div>
 
           {/* Premium Benefit Projection - Espacio entre botones y ticket */}
-          <div className="h-32 md:h-36 flex flex-col items-center justify-center relative overflow-visible mb-8">
+          <div className={`flex flex-col items-center justify-center relative overflow-visible transition-all duration-500 ${isIdFocused ? 'h-10 mb-2' : 'h-32 md:h-36 mb-8'}`}>
             <AnimatePresence mode="wait">
               {selectedTier && (
                 <motion.div
