@@ -840,12 +840,12 @@ export default function Home() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: idx * 0.15, duration: 0.5 }}
-                  className="flex flex-col p-6 md:p-8 rounded-[2rem] glass-card relative overflow-hidden group h-full justify-center"
+                  className="flex flex-col p-4 md:p-8 rounded-2xl md:rounded-[2rem] glass-card relative overflow-hidden group h-full justify-center"
                 >
-                  <div className="w-16 h-16 bg-[#1a1a1a] rounded-2xl flex items-center justify-center mb-4 md:mb-6 border border-white/5 shrink-0">
-                    <span className="text-amber-400 font-black text-3xl md:text-4xl">{step}</span>
+                  <div className="w-10 h-10 md:w-16 md:h-16 bg-[#1a1a1a] rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-6 border border-white/5 shrink-0">
+                    <span className="text-amber-400 font-black text-xl md:text-4xl">{step}</span>
                   </div>
-                  <p className="text-white/90 text-lg md:text-xl font-medium leading-tight">{text}</p>
+                  <p className="text-white/90 text-sm md:text-xl font-medium leading-tight">{text}</p>
                 </motion.div>
               ))}
             </div>
@@ -858,7 +858,7 @@ export default function Home() {
               transition={{ delay: 0.3, duration: 0.5 }}
               className="flex flex-col p-6 md:p-8 rounded-[2rem] glass-card relative overflow-hidden h-full lg:col-span-4"
             >
-              <div className="w-16 h-16 bg-[#1a1a1a] rounded-2xl flex items-center justify-center mb-8 border border-white/5 shrink-0">
+              <div className="w-16 h-16 bg-[#1a1a1a] rounded-2xl flex items-center justify-center mb-8 border border-white/5 shrink-0 mx-auto md:mx-0">
                 <AlertCircle className="h-8 w-8 text-amber-500" />
               </div>
               <div className="flex flex-col flex-1 justify-around gap-6">
@@ -868,7 +868,7 @@ export default function Home() {
                   { title: 'No Acumulable', text: 'Un premio por persona' },
                   { title: 'Canje Mensual', text: 'Un pack de 12 empanadas por mes' }
                 ].map((item, idx) => (
-                  <div key={idx} className="flex flex-col text-left">
+                  <div key={idx} className="flex flex-col text-center md:text-left">
                     <h3 className="text-base md:text-lg font-black text-white uppercase tracking-tight mb-2">{item.title}</h3>
                     <p className="text-sm md:text-base text-white/50 leading-tight">{item.text}</p>
                   </div>
@@ -883,7 +883,7 @@ export default function Home() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4, duration: 0.5 }}
-              className="flex flex-col h-full scroll-mt-32 relative lg:col-span-5"
+              className="flex flex-col h-full scroll-mt-32 relative lg:col-span-5 mt-10 md:mt-0"
             >
               <h3 className="absolute -top-8 md:-top-10 left-0 right-0 text-white font-bold text-center w-full leading-tight text-sm md:text-base uppercase tracking-wider">
                 Beneficio exclusivo de Vicente Lopez
