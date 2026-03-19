@@ -26,7 +26,7 @@ export default function Validator() {
   useEffect(() => {
     document.title = "Mi Gusto | Ticket System";
     loadValidatedTickets();
-    
+
     // Opcionalmente restaurar el título al salir si es necesario
     return () => {
       document.title = "Mi Gusto | Ticket Ganador";
@@ -112,11 +112,11 @@ export default function Validator() {
 
 
   return (
-    <div className="min-h-screen py-12 px-4 relative overflow-hidden">
+    <div className="min-h-screen pt-4 pb-12 px-4 relative overflow-hidden">
       <div className="container mx-auto max-w-6xl relative z-10">
-        <div className="text-center mb-16">
+        <div className="text-center mb-10">
           <h1 className="text-5xl md:text-6xl font-serif font-bold mb-4 text-migusto-crema tracking-tight">
-            Validador de <span className="text-migusto-rojo italic">Sucursal</span>
+            Validador de <span className="text-gold-gradient italic">Sucursal</span>
           </h1>
           <p className="text-migusto-crema/40 text-xl font-light">Sistema de validación exclusivo para empleados Mi Gusto</p>
         </div>
@@ -127,9 +127,6 @@ export default function Validator() {
             animate={{ x: 0, opacity: 1 }}
             className="glass-card p-10 rounded-[2.5rem] relative group"
           >
-            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
-              <Ticket className="h-24 w-24 text-migusto-rojo" />
-            </div>
 
             <h2 className="text-3xl font-serif font-bold text-migusto-dorado-bright mb-8">Validar Ticket</h2>
 
@@ -140,15 +137,15 @@ export default function Validator() {
                   <p className="font-bold mb-2 text-migusto-crema uppercase tracking-widest text-xs">Protocolo de Seguridad:</p>
                   <ul className="space-y-2">
                     <li className="flex items-center space-x-2">
-                      <div className="w-1 h-1 rounded-full bg-migusto-rojo"></div>
+                      <div className="w-1 h-1 rounded-full bg-amber-500"></div>
                       <span>Verificar DNI físico original del cliente</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <div className="w-1 h-1 rounded-full bg-migusto-rojo"></div>
+                      <div className="w-1 h-1 rounded-full bg-amber-500"></div>
                       <span>Validar autenticidad del Ticket Dorado</span>
                     </li>
                     <li className="flex items-center space-x-2">
-                      <div className="w-1 h-1 rounded-full bg-migusto-rojo"></div>
+                      <div className="w-1 h-1 rounded-full bg-amber-500"></div>
                       <span>Carga obligatoria de datos en sistema</span>
                     </li>
                   </ul>
@@ -168,7 +165,7 @@ export default function Validator() {
                     pattern: { value: /^[0-9]+$/, message: 'Solo números' },
                     minLength: { value: 7, message: 'Mínimo 7 dígitos' }
                   })}
-                  className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-migusto-crema focus:outline-none focus:ring-2 focus:ring-migusto-rojo/50 focus:border-migusto-rojo transition-all text-lg font-medium placeholder:text-white/10"
+                  className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-migusto-crema focus:outline-none focus:ring-2 focus:ring-migusto-dorado-bright/30 focus:border-migusto-dorado-bright hover:border-white/20 transition-all text-lg font-medium placeholder:text-white/10"
                   placeholder="Sin puntos ni espacios"
                 />
                 {errors.dni && (
@@ -178,12 +175,12 @@ export default function Validator() {
 
               <div className="space-y-3">
                 <label className="block text-migusto-crema/70 text-sm font-bold uppercase tracking-widest ml-1">
-                  ID del Ticket Dorado
+                  ID del Ticket
                 </label>
                 <input
                   type="text"
                   {...register('id_ticket', { required: 'ID del ticket es requerido' })}
-                  className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-migusto-crema focus:outline-none focus:ring-2 focus:ring-migusto-rojo/50 focus:border-migusto-rojo transition-all text-lg font-medium placeholder:text-white/10 uppercase"
+                  className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-migusto-crema focus:outline-none focus:ring-2 focus:ring-migusto-dorado-bright/30 focus:border-migusto-dorado-bright hover:border-white/20 transition-all text-lg font-medium placeholder:text-white/10 uppercase"
                   placeholder="Ej: ORO1-50"
                 />
                 {errors.id_ticket && (
@@ -196,7 +193,7 @@ export default function Validator() {
                 disabled={isLoading}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full bg-migusto-rojo text-white py-5 rounded-2xl font-black text-xl shadow-premium hover:bg-migusto-rojo-claro transition-all disabled:opacity-50 flex items-center justify-center space-x-3 group relative overflow-hidden"
+                className="w-full bg-amber-500 text-black py-5 rounded-2xl font-black text-xl shadow-premium hover:bg-amber-500 transition-all disabled:opacity-50 flex items-center justify-center space-x-3 group relative overflow-hidden"
               >
                 {isLoading ? (
                   <>
