@@ -3,7 +3,8 @@ import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import {
   CheckCircle2,
   AlertCircle,
-  MapPin
+  MapPin,
+  ChevronDown
 } from 'lucide-react';
 import { EpicSubtitle } from '../components/EpicText';
 import { supabase } from '../lib/supabase';
@@ -12,7 +13,7 @@ import { supabase } from '../lib/supabase';
 
 // --- CONFIGURACIÓN DE DATOS ---
 
-type TicketTier = 'oro' | 'plata' | 'bronce';
+type TicketTier = 'oro' | 'plata' | 'bronce' | null;
 
 const tierStyles = {
   oro: {
@@ -45,11 +46,12 @@ const tierStyles = {
 };
 
 export default function Home() {
-  const [selectedTier, setSelectedTier] = useState<TicketTier>('oro');
+  const [selectedTier, setSelectedTier] = useState<TicketTier>(null);
   const [ticketId, setTicketId] = useState('');
   const [isCardFlipped, setIsCardFlipped] = useState(false);
   const [idError, setIdError] = useState<string | null>(null);
   const [isValidating, setIsValidating] = useState(false);
+  const [isIdFocused, setIsIdFocused] = useState(false);
 
   const [regName, setRegName] = useState('');
   const [regEmail, setRegEmail] = useState('');
@@ -441,7 +443,7 @@ export default function Home() {
                 whileHover={(!isCardFlipped && !isRegistered) ? { scale: 1.1, y: -12 } : {}}
                 whileTap={(!isCardFlipped && !isRegistered) ? { scale: 0.95 } : {}}
                 className={`group relative flex flex-col items-center rounded-3xl md:rounded-[2.5rem] 
-                  w-28 md:w-56 p-4 md:p-10
+                  w-32 md:w-72 p-6 md:p-14
                   overflow-hidden transition-all duration-700 premium-border ${(isCardFlipped || isRegistered) ? 'opacity-40 grayscale-[0.5] cursor-not-allowed' : ''} ${selectedTier === tier
                     ? `animate-float ${tierStyles[tier].shadow} bg-gradient-to-br ${tierStyles[tier].gradient} border-2 ${tierStyles[tier].border}`
                     : 'bg-white/[0.03] backdrop-blur-xl border border-white/10 hover:border-white/30'
@@ -464,27 +466,17 @@ export default function Home() {
                   <img
                     src={`${import.meta.env.BASE_URL}Logo Mi Gusto 2025.png`}
                     alt="Mi Gusto"
-                    className={`h-6 md:h-16 w-auto object-contain transition-all duration-500 brightness-200 contrast-125 ${selectedTier === tier ? 'drop-shadow-lg' : 'grayscale opacity-40 group-hover:opacity-70 group-hover:grayscale-0'
+                    className={`h-8 md:h-20 w-auto object-contain transition-all duration-500 brightness-200 contrast-125 ${selectedTier === tier ? 'drop-shadow-lg' : 'grayscale opacity-40 group-hover:opacity-70 group-hover:grayscale-0'
                       }`}
                   />
                 </div>
 
-                <h3 className={`relative text-sm md:text-3xl font-black uppercase tracking-tight transition-all duration-500 ${selectedTier === tier
+                <h3 className={`relative text-lg md:text-5xl font-black uppercase tracking-tight transition-all duration-500 ${selectedTier === tier
                   ? 'text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]'
                   : 'text-white/40 group-hover:text-white/70'
                   }`}>
                   {tier === 'oro' ? 'Gold' : tier === 'plata' ? 'Silver' : 'Bronze'}
                 </h3>
-
-                <div className={`relative flex flex-col items-center mt-1 md:mt-3 transition-colors ${selectedTier === tier ? 'text-white/90' : 'text-white/30 group-hover:text-white/50'
-                  }`}>
-                  <span className="text-[6px] md:text-lg uppercase tracking-[0.1em] md:tracking-[0.25em] font-black leading-tight drop-shadow-sm text-center">
-                    {tier === 'oro' ? 'por 12 meses' : tier === 'plata' ? 'por 6 meses' : 'por 3 meses'}
-                  </span>
-                  <span className="text-[4px] md:text-[10px] uppercase mt-0.5 md:mt-1 tracking-[0.05em] md:tracking-[0.1em] font-medium opacity-50 hidden md:block">
-                    Pack 12 empanadas cada mes
-                  </span>
-                </div>
 
                 {/* Particle sparkle effects */}
                 {selectedTier === tier && (
@@ -496,6 +488,67 @@ export default function Home() {
                 )}
               </motion.button>
             ))}
+          </div>
+
+          {/* Premium Benefit Projection - Espacio entre botones y ticket */}
+          <div className="h-32 md:h-48 flex flex-col items-center justify-center relative overflow-visible mb-8">
+            <AnimatePresence mode="wait">
+              {selectedTier && (
+                <motion.div
+                  key={selectedTier}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex flex-col items-center"
+                >
+                  
+                  {/* Texto Proyectado - Premium Look */}
+                  <div className="relative flex flex-col items-center">
+                    <motion.span
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-amber-400 font-black uppercase tracking-[0.15em] md:tracking-[0.3em] text-[10px] md:text-xl mb-1 md:mb-3 drop-shadow-md text-center max-w-[280px] md:max-w-none"
+                    >
+                      Un pack de 12 empanadas gratis por mes
+                    </motion.span>
+                    <motion.div
+                      initial={{ opacity: 0, filter: 'blur(15px)', y: -10 }}
+                      animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
+                      className="text-4xl md:text-8xl font-black text-white uppercase tracking-tighter text-center"
+                      style={{ 
+                        textShadow: '0 0 20px rgba(255,255,255,0.4), 0 0 40px rgba(251,191,36,0.3)',
+                        fontFamily: 'Outfit, sans-serif'
+                      }}
+                    >
+                      {selectedTier === 'oro' ? 'Durante 12 Meses' : selectedTier === 'plata' ? 'Durante 6 Meses' : 'Durante 3 Meses'}
+                    </motion.div>
+                    
+                    {/* Glow Pulse debajo del texto */}
+                    <motion.div
+                      animate={{ opacity: [0.2, 0.5, 0.2], scale: [1, 1.1, 1] }}
+                      transition={{ duration: 3, repeat: Infinity }}
+                      className="absolute inset-0 bg-amber-400/20 blur-[30px] -z-10 rounded-full"
+                    />
+
+                    {/* Laser/Beam effect towards the ticket */}
+                    <motion.div 
+                       className="absolute -bottom-16 left-1/2 -translate-x-1/2 w-[2px] h-32 bg-gradient-to-t from-amber-400 to-transparent blur-[1px] hidden md:block"
+                       animate={{ 
+                         opacity: [0, 0.8, 0],
+                         height: [0, 120],
+                         y: [0, 20]
+                       }}
+                       transition={{ 
+                         duration: 2, 
+                         repeat: Infinity,
+                         ease: "easeOut" 
+                       }}
+                    />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Golden Ticket - Molde con inputs */}
@@ -525,6 +578,17 @@ export default function Home() {
             {/* Inputs eliminados, ahora están dentro de la tarjeta */}
 
             {/* Molde de tarjeta flipeable - placeholder para CodePen */}
+            <AnimatePresence>
+              {isIdFocused && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 pointer-events-none"
+                />
+              )}
+            </AnimatePresence>
+
             <div
               className="perspective-[1000px] relative"
             >
@@ -535,12 +599,20 @@ export default function Home() {
                     ? 'linear-gradient(to bottom right, #6b5800, #c5a059, #4d3d00)'
                     : selectedTier === 'plata'
                       ? 'linear-gradient(to bottom right, #4a4a4a, #C0C0C0, #1a1a1a)'
-                      : 'linear-gradient(to bottom right, #6b3e26, #CD7F32, #2d1e16)',
+                      : selectedTier === 'bronce'
+                        ? 'linear-gradient(to bottom right, #6b3e26, #CD7F32, #2d1e16)'
+                        : 'linear-gradient(to bottom right, #1a1a1a, #2a2a2a, #1a1a1a)',
                   borderColor: selectedTier === 'oro'
-                    ? 'rgba(251, 191, 36, 0.5)' // amber-400
+                    ? 'rgba(251, 191, 36, 0.5)'
                     : selectedTier === 'plata'
-                      ? 'rgba(203, 213, 225, 0.4)' // slate-300
-                      : 'rgba(217, 119, 6, 0.4)' // amber-600
+                      ? 'rgba(203, 213, 225, 0.4)'
+                      : selectedTier === 'bronce'
+                        ? 'rgba(217, 119, 6, 0.4)'
+                        : 'rgba(255, 255, 255, 0.1)',
+                  filter: selectedTier ? 'grayscale(0) opacity(1)' : 'grayscale(1) opacity(0.5)',
+                  scale: isIdFocused ? 1.08 : 1,
+                  y: isIdFocused ? -150 : 0,
+                  zIndex: isIdFocused ? 50 : 1
                 }}
                 onClick={() => {
                   if (isRegistered) {
@@ -586,13 +658,18 @@ export default function Home() {
                             value={ticketId}
                             onChange={handleTicketIdChange}
                             placeholder="MG-XXXXXXXX"
-                            disabled={isValidating}
                             animate={idError ? {
                               x: [0, -10, 10, -10, 10, -10, 10, 0],
                               color: ["#000", "#ef4444", "#ef4444", "#000"]
-                            } : { x: 0, color: "#000" }}
+                            } : { 
+                              x: 0, 
+                              color: selectedTier ? "#000" : "rgba(0,0,0,0.3)" 
+                            }}
                             transition={{ duration: 1 }}
-                            className={`w-full bg-transparent text-[12px] md:text-[24px] font-black font-mono placeholder:text-black/40 focus:outline-none tracking-normal transition-colors text-center shadow-none border-none ${isValidating ? 'animate-pulse opacity-50' : ''}`}
+                            onFocus={() => setIsIdFocused(true)}
+                            onBlur={() => setIsIdFocused(false)}
+                            disabled={!selectedTier || isValidating}
+                            className={`w-full bg-transparent text-[12px] md:text-[24px] font-black font-mono placeholder:text-black/40 focus:outline-none tracking-normal transition-colors text-center shadow-none border-none ${!selectedTier ? 'cursor-not-allowed' : ''} ${isValidating ? 'animate-pulse opacity-50' : ''}`}
                           />
                         ) : (
                           <motion.span
@@ -623,7 +700,7 @@ export default function Home() {
                 >
                   {/* Header con Logo y Título - DORSO */}
                   <div className="flex justify-between items-start w-full relative z-10 mb-1 md:mb-6">
-                    <span className={`text-[12px] md:text-lg font-black uppercase tracking-widest opacity-60 ${tierStyles[selectedTier].label}`}>
+                    <span className={`text-[12px] md:text-lg font-black uppercase tracking-widest opacity-60 ${selectedTier ? tierStyles[selectedTier].label : ''}`}>
                       Registro de Socio
                     </span>
                     <img
@@ -654,7 +731,7 @@ export default function Home() {
                             key="name-printed"
                             initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
                             animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
-                            className={`block w-full text-3xl md:text-5xl font-black font-mono tracking-tighter text-left uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
+                            className={`block w-full text-3xl md:text-5xl font-black font-mono tracking-tighter text-left uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${selectedTier ? tierStyles[selectedTier].label : ''}`}
                           >
                             {regName}
                           </motion.span>
@@ -684,7 +761,7 @@ export default function Home() {
                               key="phone-printed"
                               initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
                               animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
-                              className={`block w-full text-lg md:text-3xl font-black font-mono tracking-tighter text-left drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
+                              className={`block w-full text-lg md:text-3xl font-black font-mono tracking-tighter text-left drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${selectedTier ? tierStyles[selectedTier].label : ''}`}
                             >
                               {regPhone}
                             </motion.span>
@@ -711,7 +788,7 @@ export default function Home() {
                               key="dni-printed"
                               initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
                               animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
-                              className={`block w-full text-lg md:text-3xl font-black font-mono tracking-tighter text-left drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
+                              className={`block w-full text-lg md:text-3xl font-black font-mono tracking-tighter text-left drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${selectedTier ? tierStyles[selectedTier].label : ''}`}
                             >
                               {regDni}
                             </motion.span>
@@ -740,7 +817,7 @@ export default function Home() {
                             key="email-printed"
                             initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
                             animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
-                            className={`block w-full text-[14px] md:text-2xl font-black font-mono tracking-tighter text-left lowercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
+                            className={`block w-full text-[14px] md:text-2xl font-black font-mono tracking-tighter text-left lowercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${selectedTier ? tierStyles[selectedTier].label : ''}`}
                           >
                             {regEmail}
                           </motion.span>
