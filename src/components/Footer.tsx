@@ -16,7 +16,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-migusto-tierra-oscuro border-t border-white/5 mt-6 md:mt-20 py-10 relative">
+    <footer className="bg-migusto-tierra-oscuro border-t border-white/5 py-4 relative">
       <div className="w-full px-8">
         <div className="flex flex-col md:flex-row items-center justify-center relative min-h-[60px]">
 

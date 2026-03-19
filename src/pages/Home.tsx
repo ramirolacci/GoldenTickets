@@ -110,7 +110,7 @@ export default function Home() {
     }
   }, []);
 
-  const saveToLocalStorage = (data: any) => {
+  const saveToLocalStorage = (data: Record<string, string>) => {
     localStorage.setItem('mi-gusto-ticket-reg', JSON.stringify({
       ...data,
       ticketId,
@@ -213,13 +213,13 @@ export default function Home() {
     };
 
     validateTicket();
-  }, [ticketId]);
+  }, [ticketId, selectedTier]);
 
   // --- HANDLERS PARA REGISTRO ---
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Solo letras y espacios
-    const value = e.target.value.replace(/[^a-zA-Z\sñÑáéíóúÁÉÍÓÚ]/g, '');
+        const value = e.target.value.replace(/[^a-zA-Z\sñÑáéíóúÁÉÍÓÚ]/g, '');
     setRegName(value.toUpperCase());
   };
 
@@ -626,7 +626,7 @@ export default function Home() {
             <motion.div
                 animate={{
                   scale: isIdFocused ? 1.05 : 1,
-                  y: isIdFocused ? -230 : 0,
+                  y: isIdFocused ? -280 : 0,
                   zIndex: isIdFocused ? 50 : 1
                 }}
                className="relative z-50"
@@ -653,7 +653,7 @@ export default function Home() {
                        exit={{ opacity: 0, y: -10 }}
                        className="text-amber-200/80 font-bold text-[10px] md:text-xs bg-black/20 backdrop-blur-sm px-4 py-1.5 rounded-full"
                      >
-                       Encontrá tu ID en el dorso del ticket
+                        Encontrá tu ID en el dorso del ticket
                      </motion.p>
                    ) : null}
                  </AnimatePresence>
@@ -805,6 +805,8 @@ export default function Home() {
                              placeholder="NOMBRE Y APELLIDO"
                              value={regName}
                              onChange={handleNameChange}
+                              onFocus={() => setIsIdFocused(true)}
+                              onBlur={() => setIsIdFocused(false)}
                              className="w-full bg-transparent text-xl md:text-4xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left uppercase"
                            />
                          ) : (
@@ -833,6 +835,8 @@ export default function Home() {
                                placeholder="11 1234-5678"
                                value={regPhone}
                                onChange={handlePhoneChange}
+                              onFocus={() => setIsIdFocused(true)}
+                              onBlur={() => setIsIdFocused(false)}
                                maxLength={12}
                                className="w-full bg-transparent text-sm md:text-2xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left"
                              />
@@ -862,6 +866,8 @@ export default function Home() {
                                placeholder="DNI"
                                value={regDni}
                                onChange={handleDniChange}
+                              onFocus={() => setIsIdFocused(true)}
+                              onBlur={() => setIsIdFocused(false)}
                                maxLength={10}
                                className="w-full bg-transparent text-sm md:text-2xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-right"
                              />
@@ -891,6 +897,8 @@ export default function Home() {
                              placeholder="correo electrónico"
                              value={regEmail}
                              onChange={handleEmailChange}
+                              onFocus={() => setIsIdFocused(true)}
+                              onBlur={() => setIsIdFocused(false)}
                              className="w-full bg-transparent text-[10px] md:text-lg font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left lowercase"
                            />
                          ) : (
@@ -951,7 +959,7 @@ export default function Home() {
       </motion.section>
 
       {/* EL CAMINO A LA EXPERIENCIA - Unified Section */}
-      <section className="py-24 px-4 relative" id="camino-experiencia">
+      <section className="pt-24 pb-10 px-4 relative" id="camino-experiencia">
         <div className="container mx-auto max-w-[1400px] relative">
           <h2 className="text-4xl md:text-5xl font-black uppercase text-white mb-16 tracking-tight text-center md:text-left">
             El camino a la <span className="text-migusto-dorado">experiencia</span>

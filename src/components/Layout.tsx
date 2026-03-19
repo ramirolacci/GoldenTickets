@@ -20,7 +20,7 @@ export default function Layout({ children }: LayoutProps) {
       <GoldenStars />
 
       <Navbar />
-      <main className="flex-grow pt-24 pb-12 relative z-10">
+      <main className="flex-grow pt-24 relative z-10">
         {children}
       </main>
       <Footer />
