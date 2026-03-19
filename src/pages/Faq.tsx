@@ -98,7 +98,10 @@ export default function Faq() {
                   <p>{faq.answer}</p>
                   {faq.question === '¿Dónde?' && (
                     <button
-                      onClick={() => navigate('/#ubicacion-sucursal')}
+                      onClick={() => {
+                        sessionStorage.setItem('scrollToUbicacion', 'true');
+                        navigate('/');
+                      }}
                       className="text-xs font-black uppercase tracking-widest px-4 py-2 bg-white/10 hover:bg-migusto-rojo rounded-full transition-all border border-white/10 hover:border-transparent inline-block text-white not-italic"
                     >
                       Ver ubicación en el Mapa

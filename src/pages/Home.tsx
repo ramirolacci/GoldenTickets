@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 import {
   CheckCircle2,
   AlertCircle,
-  MapPin,
-  ChevronDown
+  MapPin
 } from 'lucide-react';
 import { EpicSubtitle } from '../components/EpicText';
 import { supabase } from '../lib/supabase';
@@ -62,6 +62,31 @@ export default function Home() {
   const [isSuccessfullyConfirmed, setIsSuccessfullyConfirmed] = useState(false);
   const [showIdHint, setShowIdHint] = useState(false);
   const hintTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const location = useLocation();
+
+  // --- SCROLL TO HASH OR SESSION STORAGE ---
+  useEffect(() => {
+    const checkScroll = () => {
+      let targetId = '';
+      if (location.hash) {
+        targetId = location.hash.replace('#', '');
+      } else if (sessionStorage.getItem('scrollToUbicacion') === 'true') {
+        targetId = 'ubicacion-sucursal';
+        sessionStorage.removeItem('scrollToUbicacion');
+      }
+
+      if (targetId) {
+        const element = document.getElementById(targetId);
+        if (element) {
+          setTimeout(() => {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 800); // Delay más largo para asegurar renderizado completo
+        }
+      }
+    };
+
+    checkScroll();
+  }, [location]);
 
   // --- PERSISTENCIA LOCALSTORAGE ---
   useEffect(() => {
@@ -125,10 +150,19 @@ export default function Home() {
   useEffect(() => {
     const validateTicket = async () => {
       if (ticketId.length === 10) {
-        // 1. Validación de Formato: MG + 8 caracteres alfanuméricos
-        const ticketRegex = /^MG[A-Z0-9]{8}$/;
+        // 1. Validación de Formato: MG + 7 caracteres + letra de nivel (G/S/B)
+        const ticketRegex = /^MG[A-Z0-9]{7}[GSB]$/;
         if (!ticketRegex.test(ticketId)) {
-          setIdError('Formato inválido (Ej: MG12345678)');
+          setIdError('ID no válido');
+          return;
+        }
+
+        // 1.1 Validación de Letra Final (Nivel)
+        const lastChar = ticketId[ticketId.length - 1];
+        const expectedLastChar = selectedTier === 'oro' ? 'G' : selectedTier === 'plata' ? 'S' : 'B';
+        
+        if (lastChar !== expectedLastChar) {
+          setIdError('El nivel del ticket ingresado es incorrecto');
           return;
         }
 
@@ -142,7 +176,7 @@ export default function Home() {
             .single();
 
           if (error || !data) {
-            setIdError('Ticket no encontrado');
+            setIdError('ID no válido'); // Mantenemos el mensaje genérico si no existe
             return;
           }
 
@@ -161,9 +195,9 @@ export default function Home() {
 
           const ticketTier = tierMap[data.tipo] || 'oro';
 
-          // 3.1 Validación de Nivel: El ticket debe coincidir con el seleccionado
+          // 3.1 Validación de Seguridad Extra: El ticket en DB debe coincidir con el seleccionado
           if (ticketTier !== selectedTier) {
-            setIdError('Este ID no pertenece a este nivel de premio');
+            setIdError('El nivel del ticket ingresado es incorrecto');
             return;
           }
 
@@ -589,27 +623,20 @@ export default function Home() {
               )}
             </AnimatePresence>
 
-            <div
-              className="perspective-[1000px] relative"
-            >
+            <motion.div
+               animate={{
+                 scale: isIdFocused ? 1.08 : 1,
+                 y: isIdFocused ? -150 : 0,
+                 zIndex: isIdFocused ? 50 : 1
+               }}
+               className="relative"
+             >
+               <div
+                 className="perspective-[1000px] relative"
+               >
               <motion.div
                 animate={{
                   rotateY: isCardFlipped ? 180 : 0,
-                  background: selectedTier === 'oro'
-                    ? 'linear-gradient(to bottom right, #6b5800, #c5a059, #4d3d00)'
-                    : selectedTier === 'plata'
-                      ? 'linear-gradient(to bottom right, #4a4a4a, #C0C0C0, #1a1a1a)'
-                      : selectedTier === 'bronce'
-                        ? 'linear-gradient(to bottom right, #6b3e26, #CD7F32, #2d1e16)'
-                        : 'linear-gradient(to bottom right, #1a1a1a, #2a2a2a, #1a1a1a)',
-                  borderColor: selectedTier === 'oro'
-                    ? 'rgba(251, 191, 36, 0.5)'
-                    : selectedTier === 'plata'
-                      ? 'rgba(203, 213, 225, 0.4)'
-                      : selectedTier === 'bronce'
-                        ? 'rgba(217, 119, 6, 0.4)'
-                        : 'rgba(255, 255, 255, 0.1)',
-                  filter: selectedTier ? 'grayscale(0) opacity(1)' : 'grayscale(1) opacity(0.5)',
                   scale: isIdFocused ? 1.08 : 1,
                   y: isIdFocused ? -150 : 0,
                   zIndex: isIdFocused ? 50 : 1
@@ -619,23 +646,34 @@ export default function Home() {
                     setIsCardFlipped(!isCardFlipped);
                   }
                 }}
-                transition={{
-                  rotateY: { duration: 0.6, ease: 'easeInOut' },
-                  background: { duration: 0.8, ease: 'easeOut' },
-                  borderColor: { duration: 0.8, ease: 'easeOut' }
-                }}
-                className={`relative w-full max-w-2xl mx-auto aspect-[677/313] rounded-3xl border-2 ${isRegistered ? 'cursor-pointer' : ''}`}
+                className={`relative w-full max-w-2xl mx-auto aspect-[677/313] rounded-3xl ${isRegistered ? 'cursor-pointer' : ''}`}
                 style={{ transformStyle: 'preserve-3d' }}
               >
                 {/* Cara frontal */}
-                <div
-                  className="absolute inset-0 flex flex-col p-6 md:p-10 rounded-[22px] overflow-hidden"
-                  style={{
-                    backfaceVisibility: 'hidden',
-                    transform: 'rotateY(0deg)',
-                    zIndex: isCardFlipped ? 0 : 1
-                  }}
-                >
+                 <div
+                   className="absolute inset-0 flex flex-col p-6 md:p-10 rounded-[22px] overflow-hidden border-2"
+                   style={{
+                     backfaceVisibility: 'hidden',
+                     WebkitBackfaceVisibility: 'hidden',
+                     transform: 'rotateY(0deg)',
+                     zIndex: 2,
+                     background: selectedTier === 'oro'
+                       ? 'linear-gradient(to bottom right, #6b5800, #c5a059, #4d3d00)'
+                       : selectedTier === 'plata'
+                         ? 'linear-gradient(to bottom right, #4a4a4a, #C0C0C0, #1a1a1a)'
+                         : selectedTier === 'bronce'
+                           ? 'linear-gradient(to bottom right, #6b3e26, #CD7F32, #2d1e16)'
+                           : 'linear-gradient(to bottom right, #1a1a1a, #2a2a2a, #1a1a1a)',
+                     borderColor: selectedTier === 'oro'
+                       ? 'rgba(251, 191, 36, 0.5)'
+                       : selectedTier === 'plata'
+                         ? 'rgba(203, 213, 225, 0.4)'
+                         : selectedTier === 'bronce'
+                           ? 'rgba(217, 119, 6, 0.4)'
+                           : 'rgba(255, 255, 255, 0.1)',
+                     filter: selectedTier ? 'grayscale(0) opacity(1)' : 'grayscale(1) opacity(0.5)',
+                   }}
+                 >
                   {/* Overlay Confirmación removido en esta etapa */}
 
                   {/* Mockup Overlay */}
@@ -690,176 +728,193 @@ export default function Home() {
                   Esta sección aparece automáticamente mediante un giro (rotateY(180deg))
                   cuando el ID ingresado en el frente es validado correctamente.
                 */}
-                <div
-                  className="absolute inset-0 flex flex-col p-3 md:p-10 overflow-hidden"
-                  style={{
-                    backfaceVisibility: 'hidden',
-                    transform: 'rotateY(180deg)',
-                    zIndex: isCardFlipped ? 1 : 0
-                  }}
-                >
-                  {/* Header con Logo y Título - DORSO */}
-                  <div className="flex justify-between items-start w-full relative z-10 mb-1 md:mb-6">
-                    <span className={`text-[12px] md:text-lg font-black uppercase tracking-widest opacity-60 ${selectedTier ? tierStyles[selectedTier].label : ''}`}>
-                      Registro de Socio
-                    </span>
-                    <img
-                      src={`${import.meta.env.BASE_URL}Logo Mi Gusto 2025.png`}
-                      alt="Mi Gusto"
-                      className="h-5 md:h-10 w-auto object-contain brightness-200 opacity-60"
-                    />
-                  </div>
+                 <div
+                   className="absolute inset-0 flex flex-col p-3 md:p-10 overflow-hidden rounded-[22px] border-2"
+                   style={{
+                     backfaceVisibility: 'hidden',
+                     WebkitBackfaceVisibility: 'hidden',
+                     transform: 'rotateY(180deg)',
+                     zIndex: 1,
+                     background: selectedTier === 'oro'
+                       ? 'linear-gradient(to bottom right, #6b5800, #c5a059, #4d3d00)'
+                       : selectedTier === 'plata'
+                         ? 'linear-gradient(to bottom right, #4a4a4a, #C0C0C0, #1a1a1a)'
+                         : selectedTier === 'bronce'
+                           ? 'linear-gradient(to bottom right, #6b3e26, #CD7F32, #2d1e16)'
+                           : 'linear-gradient(to bottom right, #1a1a1a, #2a2a2a, #1a1a1a)',
+                     borderColor: selectedTier === 'oro'
+                       ? 'rgba(251, 191, 36, 0.5)'
+                       : selectedTier === 'plata'
+                         ? 'rgba(203, 213, 225, 0.4)'
+                         : selectedTier === 'bronce'
+                           ? 'rgba(217, 119, 6, 0.4)'
+                           : 'rgba(255, 255, 255, 0.1)',
+                   }}
+                 >
+                   {/* Header con Logo y Título - DORSO (Overlayed on Mockup if needed, or part of mockup) */}
+                   <div className="absolute top-[8%] left-[8%] right-[8%] flex justify-between items-start z-30 opacity-60">
+                     <span className={`text-[10px] md:text-sm font-black uppercase tracking-widest ${selectedTier ? tierStyles[selectedTier].label : ''}`}>
+                       Registro de Socio
+                     </span>
+                     <img
+                       src={`${import.meta.env.BASE_URL}Logo_MiGusto_Experience.png`}
+                       alt="Mi Gusto"
+                       className="h-4 md:h-8 w-auto object-contain brightness-200"
+                     />
+                   </div>
 
-                  <div className="flex flex-col gap-2 md:gap-8 flex-1 justify-center w-full relative z-10">
-                    {/* NOMBRE Y APELLIDO - Full Width, Left Aligned */}
-                    <div className="w-full">
-                      <AnimatePresence mode="wait">
-                        {!isRegistered ? (
-                          <motion.input
-                            key="name-input"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            type="text"
-                            placeholder="NOMBRE Y APELLIDO"
-                            value={regName}
-                            onChange={handleNameChange}
-                            className="w-full bg-transparent text-3xl md:text-5xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left uppercase"
-                          />
-                        ) : (
-                          <motion.span
-                            key="name-printed"
-                            initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
-                            animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
-                            className={`block w-full text-3xl md:text-5xl font-black font-mono tracking-tighter text-left uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${selectedTier ? tierStyles[selectedTier].label : ''}`}
-                          >
-                            {regName}
-                          </motion.span>
-                        )}
-                      </AnimatePresence>
-                    </div>
+                   {/* Inputs Section - Positioned over the mockup's fields */}
+                   <div className="absolute inset-0 z-30">
+                     {/* NOMBRE Y APELLIDO */}
+                     <div className="absolute top-[32%] left-[8%] w-[84%]">
+                       <AnimatePresence mode="wait">
+                         {!isRegistered ? (
+                           <motion.input
+                             key="name-input"
+                             initial={{ opacity: 0 }}
+                             animate={{ opacity: 1 }}
+                             exit={{ opacity: 0 }}
+                             type="text"
+                             placeholder="NOMBRE Y APELLIDO"
+                             value={regName}
+                             onChange={handleNameChange}
+                             className="w-full bg-transparent text-xl md:text-4xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left uppercase"
+                           />
+                         ) : (
+                           <motion.span
+                             key="name-printed"
+                             initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
+                             animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
+                             className={`block w-full text-xl md:text-4xl font-black font-mono tracking-tighter text-left uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${selectedTier ? tierStyles[selectedTier].label : ''}`}
+                           >
+                             {regName}
+                           </motion.span>
+                         )}
+                       </AnimatePresence>
+                     </div>
 
-                    {/* CELULAR Y DNI - Same Row */}
-                    <div className="w-full flex gap-5 md:gap-8">
-                      <div className="flex-1">
-                        <AnimatePresence mode="wait">
-                          {!isRegistered ? (
-                            <motion.input
-                              key="phone-input"
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              exit={{ opacity: 0 }}
-                              type="tel"
-                              placeholder="11 1234-5678"
-                              value={regPhone}
-                              onChange={handlePhoneChange}
-                              maxLength={12}
-                              className="w-full bg-transparent text-lg md:text-3xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left"
-                            />
-                          ) : (
-                            <motion.span
-                              key="phone-printed"
-                              initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
-                              animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
-                              className={`block w-full text-lg md:text-3xl font-black font-mono tracking-tighter text-left drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${selectedTier ? tierStyles[selectedTier].label : ''}`}
-                            >
-                              {regPhone}
-                            </motion.span>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                      <div className="w-28 md:w-48">
-                        <AnimatePresence mode="wait">
-                          {!isRegistered ? (
-                            <motion.input
-                              key="dni-input"
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              exit={{ opacity: 0 }}
-                              type="text"
-                              placeholder="DNI"
-                              value={regDni}
-                              onChange={handleDniChange}
-                              maxLength={10}
-                              className="w-full bg-transparent text-lg md:text-3xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left"
-                            />
-                          ) : (
-                            <motion.span
-                              key="dni-printed"
-                              initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
-                              animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
-                              className={`block w-full text-lg md:text-3xl font-black font-mono tracking-tighter text-left drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${selectedTier ? tierStyles[selectedTier].label : ''}`}
-                            >
-                              {regDni}
-                            </motion.span>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    </div>
+                     {/* CELULAR */}
+                     <div className="absolute bottom-[22%] left-[8%] w-[45%]">
+                         <AnimatePresence mode="wait">
+                           {!isRegistered ? (
+                             <motion.input
+                               key="phone-input"
+                               initial={{ opacity: 0 }}
+                               animate={{ opacity: 1 }}
+                               exit={{ opacity: 0 }}
+                               type="tel"
+                               placeholder="11 1234-5678"
+                               value={regPhone}
+                               onChange={handlePhoneChange}
+                               maxLength={12}
+                               className="w-full bg-transparent text-sm md:text-2xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left"
+                             />
+                           ) : (
+                             <motion.span
+                               key="phone-printed"
+                               initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
+                               animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
+                               className={`block w-full text-sm md:text-2xl font-black font-mono tracking-tighter text-left drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${selectedTier ? tierStyles[selectedTier].label : ''}`}
+                             >
+                               {regPhone}
+                             </motion.span>
+                           )}
+                         </AnimatePresence>
+                     </div>
 
-                    {/* EMAIL - Full Width, Left Aligned */}
-                    <div className="w-full">
-                      <AnimatePresence mode="wait">
-                        {!isRegistered ? (
-                          <motion.input
-                            key="email-input"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            type="email"
-                            placeholder="CORREO ELECTRÓNICO"
-                            value={regEmail}
-                            onChange={handleEmailChange}
-                            className="w-full bg-transparent text-[14px] md:text-2xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left lowercase"
-                          />
-                        ) : (
-                          <motion.span
-                            key="email-printed"
-                            initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
-                            animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
-                            className={`block w-full text-[14px] md:text-2xl font-black font-mono tracking-tighter text-left lowercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${selectedTier ? tierStyles[selectedTier].label : ''}`}
-                          >
-                            {regEmail}
-                          </motion.span>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  </div>
+                     {/* DNI */}
+                     <div className="absolute bottom-[22%] right-[8%] w-[35%]">
+                         <AnimatePresence mode="wait">
+                           {!isRegistered ? (
+                             <motion.input
+                               key="dni-input"
+                               initial={{ opacity: 0 }}
+                               animate={{ opacity: 1 }}
+                               exit={{ opacity: 0 }}
+                               type="text"
+                               placeholder="DNI"
+                               value={regDni}
+                               onChange={handleDniChange}
+                               maxLength={10}
+                               className="w-full bg-transparent text-sm md:text-2xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-right"
+                             />
+                           ) : (
+                             <motion.span
+                               key="dni-printed"
+                               initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
+                               animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
+                               className={`block w-full text-sm md:text-2xl font-black font-mono tracking-tighter text-right drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${selectedTier ? tierStyles[selectedTier].label : ''}`}
+                             >
+                               {regDni}
+                             </motion.span>
+                           )}
+                         </AnimatePresence>
+                     </div>
 
-                  {/* Background overlay suave para la parte de atrás */}
-                  <div className="absolute inset-0 bg-black/40 z-0 pointer-events-none" />
-                </div>
+                     {/* EMAIL */}
+                     <div className="absolute bottom-[8%] left-[8%] w-[84%]">
+                       <AnimatePresence mode="wait">
+                         {!isRegistered ? (
+                           <motion.input
+                             key="email-input"
+                             initial={{ opacity: 0 }}
+                             animate={{ opacity: 1 }}
+                             exit={{ opacity: 0 }}
+                             type="email"
+                             placeholder="correo electrónico"
+                             value={regEmail}
+                             onChange={handleEmailChange}
+                             className="w-full bg-transparent text-[10px] md:text-lg font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left lowercase"
+                           />
+                         ) : (
+                           <motion.span
+                             key="email-printed"
+                             initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
+                             animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
+                             className={`block w-full text-[10px] md:text-lg font-black font-mono tracking-tighter text-left lowercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${selectedTier ? tierStyles[selectedTier].label : ''}`}
+                           >
+                             {regEmail}
+                           </motion.span>
+                         )}
+                       </AnimatePresence>
+                     </div>
+                   </div>
+
+                   {/* Background overlay suave para la parte de atrás */}
+                   <div className="absolute inset-0 bg-black/40 z-10 pointer-events-none" />
+                 </div>
               </motion.div>
             </div>
             
-            <AnimatePresence>
-              {showIdHint && (
-                <motion.p
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="text-center mt-6 text-amber-200/60 font-medium text-sm tracking-wide"
-                >
-                  Encontrá tu ID en el dorso del ticket.
-                </motion.p>
-              )}
-            </AnimatePresence>
+               <AnimatePresence>
+                 {showIdHint && (
+                   <motion.p
+                     initial={{ opacity: 0, y: -10 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     exit={{ opacity: 0, y: -10 }}
+                     className="text-center mt-6 text-amber-200/60 font-medium text-sm tracking-wide"
+                   >
+                     Encontrá tu ID en el dorso del ticket.
+                   </motion.p>
+                 )}
+               </AnimatePresence>
 
-            {/* Error Message */}
-            <AnimatePresence>
-              {idError && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="mt-6 text-center"
-                >
-                  <p className="text-red-500 text-sm font-black uppercase tracking-wider drop-shadow-sm">
-                    {idError}
-                  </p>
-                </motion.div>
-              )}
-            </AnimatePresence>
+               {/* Error Message */}
+               <AnimatePresence>
+                 {idError && (
+                   <motion.div
+                     initial={{ opacity: 0, y: -10 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     exit={{ opacity: 0, y: -10 }}
+                     className="mt-6 text-center"
+                   >
+                     <p className="text-red-500 text-sm font-black uppercase tracking-wider drop-shadow-sm">
+                       {idError}
+                     </p>
+                   </motion.div>
+                 )}
+               </AnimatePresence>
+             </motion.div>
 
             {/* CONFIRMAR Button below the card (only when flipped and NOT registered) */}
             <AnimatePresence>
