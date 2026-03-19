@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown, ArrowLeft } from 'lucide-react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const faqs = [
   {
@@ -48,7 +48,13 @@ export default function Faq() {
   }, []);
 
   return (
-    <div className="min-h-screen pt-[70px] pb-20 px-4 relative flex flex-col items-center">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
+      className="min-h-screen pt-[70px] pb-20 px-4 relative flex flex-col items-center"
+    >
       {/* Background decorations matching the app style */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-migusto-rojo/10 blur-[150px] rounded-full"></div>
@@ -58,13 +64,13 @@ export default function Faq() {
       <div className="container mx-auto max-w-4xl relative z-10 w-full mt-0 flex-1">
         
         {/* Botón Volver Posicionado en el Recuadro Rojo de la esquina del Contenedor */}
-        <Link 
-          to="/"
-          className="absolute top-0 -left-2 md:-left-24 flex flex-col items-center gap-1 text-migusto-crema/70 hover:text-white transition-colors group z-40"
+        <button 
+          onClick={() => navigate('/')}
+          className="absolute top-0 -left-2 md:-left-24 flex flex-col items-center gap-1 text-migusto-crema/70 hover:text-white transition-colors group z-40 cursor-pointer"
         >
           <span className="font-black tracking-[0.2em] uppercase text-[10px] md:text-xs">Volver</span>
           <ArrowLeft className="w-5 h-5 md:w-6 md:h-6 transition-transform duration-300 group-hover:-translate-x-2" />
-        </Link>
+        </button>
 
         <h1 className="text-3xl md:text-5xl font-serif text-center mb-4 lg:mb-6 text-migusto-crema -mt-4">
           Preguntas <span className="text-gold-gradient italic">Frecuentes</span>
@@ -110,6 +116,6 @@ export default function Faq() {
           ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

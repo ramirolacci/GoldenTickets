@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function Navbar() {
+  const navigate = useNavigate();
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-migusto-tierra-oscuro/80 backdrop-blur-md border-b border-white/10 shadow-premium">
       <div className="container mx-auto px-4">
@@ -20,21 +21,21 @@ export default function Navbar() {
           </a>
 
           <div className="hidden md:flex items-center">
-            <Link
-              to="/faq"
-              className="text-[10px] font-black text-gold-gradient tracking-[0.3em] uppercase hover:opacity-80 transition-opacity"
+            <button
+              onClick={() => navigate('/faq')}
+              className="text-[10px] font-black text-gold-gradient tracking-[0.3em] uppercase hover:opacity-80 transition-opacity cursor-pointer"
             >
               FAQ
-            </Link>
+            </button>
           </div>
 
           <div className="md:hidden flex items-center">
-            <Link
-              to="/faq"
-              className="text-[10px] font-black text-gold-gradient tracking-[0.3em] uppercase hover:opacity-80 transition-opacity"
+            <button
+              onClick={() => navigate('/faq')}
+              className="text-[10px] font-black text-gold-gradient tracking-[0.3em] uppercase hover:opacity-80 transition-opacity cursor-pointer"
             >
               FAQ
-            </Link>
+            </button>
           </div>
         </div>
       </div>

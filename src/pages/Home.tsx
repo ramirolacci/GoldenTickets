@@ -246,9 +246,7 @@ export default function Home() {
   const isEmailValid = regEmail.includes('@');
   const isFormValid = regName.length >= 2 && isEmailValid && regPhone.length >= 6 && regDni.length >= 1;
 
-  useEffect(() => {
-    console.log('Form Validity:', { isFormValid, name: regName.length, email: isEmailValid, phone: regPhone.length, dni: regDni.length });
-  }, [isFormValid, regName, regEmail, regPhone, regDni]);
+
 
   const handleConfirmClick = async () => {
     if (isSubmitting) return;
@@ -307,7 +305,13 @@ export default function Home() {
 
 
   return (
-    <div className="min-h-screen relative">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
+      className="min-h-screen relative"
+    >
       {/* Hero Section */}
       <section className="relative min-h-screen flex flex-col justify-center pt-20 pb-36 px-4 overflow-hidden">
         <div className="absolute inset-0 z-0">
@@ -929,7 +933,6 @@ export default function Home() {
 
 
 
-
-    </div>
+    </motion.div>
   );
 }

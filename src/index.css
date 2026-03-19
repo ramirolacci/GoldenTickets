@@ -9,6 +9,10 @@
     @apply antialiased text-migusto-crema bg-migusto-tierra-oscuro font-sans;
   }
 
+  #root {
+    @apply relative flex flex-col min-h-screen;
+  }
+
   ::selection {
     @apply bg-migusto-rojo text-white;
   }
