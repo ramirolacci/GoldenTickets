@@ -634,7 +634,7 @@ export default function Home() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 pointer-events-none"
+                  className="fixed inset-0 bg-black/80 backdrop-blur-xl z-40 pointer-events-none"
                 />
               )}
             </AnimatePresence>
@@ -642,7 +642,7 @@ export default function Home() {
             <motion.div
                 animate={{
                   scale: isIdFocused ? 1.05 : 1,
-                  y: isIdFocused ? -280 : 0,
+                  y: isIdFocused && window.innerWidth >= 768 ? -100 : 0,
                   zIndex: isIdFocused ? 50 : 1
                 }}
                className="relative z-50"
