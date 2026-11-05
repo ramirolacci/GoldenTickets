@@ -92,36 +92,6 @@ Herramienta interna optimizada para el uso del personal en sucursal.
 
 ---
 
-## 📂 Estructura del Proyecto
-
-```text
-GoldenTickets/
-├── .github/
-│   └── workflows/          # Automatizaciones de CI/CD (keep-alive de base de datos)
-├── public/                 # Recursos estáticos públicos (logos, banners, demos multimedia)
-│   └── screenshots/        # Capturas de pantalla de la interfaz para documentación
-├── src/
-│   ├── components/         # Componentes modulares y reutilizables de UI (Navbar, Footer, etc.)
-│   ├── lib/                # Configuración del cliente Supabase y tipos de TypeScript
-│   ├── pages/              # Vistas de la aplicación:
-│   │   ├── Home.tsx        # Landing page promocional y canje inicial de tickets
-│   │   ├── Register.tsx    # Formulario de registro de ganadores
-│   │   ├── Validation.tsx  # Vista pública de estado de validación
-│   │   ├── Validator.tsx   # Panel interno para control y validación por DNI en sucursales
-│   │   └── Faq.tsx         # Sección de preguntas frecuentes
-│   ├── App.tsx             # Enrutamiento y estructura central de vistas
-│   ├── main.tsx            # Punto de entrada principal de React
-│   └── index.css           # Estilos base y directivas de Tailwind CSS
-├── supabase/
-│   └── migrations/         # Esquema de base de datos, tablas SQL y migraciones
-├── tickets/                # Distribución de producción lista para hosting
-├── tailwind.config.js      # Configuración de temas, paleta de colores y estilos
-├── vite.config.ts          # Configuración del empaquetador Vite
-└── package.json            # Dependencias, metadatos y scripts del proyecto
-```
-
----
-
 ## ⚙️ Instalación y Configuración Local
 
 Sigue estos pasos para clonar y ejecutar el entorno de desarrollo en tu máquina local:
